@@ -1,4 +1,4 @@
 include ':app'
 rootProject.name = "Seek"
 include ':zxing'
-
+include(":lib")

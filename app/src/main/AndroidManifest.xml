@@ -1,14 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.seek">
 
     <application
         android:allowBackup="true"
-        android:icon="@drawable/share_via_barcode"
+        android:icon="@drawable/ic_seek"
         android:label="@string/app_name"
-        android:roundIcon="@drawable/share_via_barcode"
+        android:roundIcon="@drawable/ic_seek"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        >
+        <activity android:name=".ThirdActivity">
+            <intent-filter tools:ignore="AppLinkUrlError">
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <data android:scheme="http"/>
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".SettingsActivity"
+            android:label="@string/title_activity_settings">
+            <intent-filter>
+
+                <!-- 当前活动可以响应action.MAIN这个action -->
+                <action android:name="android.intent.action.MAIN" />
+                <!-- category可以更加精确的指明当前活动能响应的intent中可能还带有的category -->
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.Settings" />
+
+                <data android:scheme="http" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".ViewfinderView" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

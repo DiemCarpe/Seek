@@ -21,7 +21,7 @@
     android:layout_height="wrap_content"
     android:padding="@dimen/half_padding">
 
-  <TextView android:id="@+id/bookmark_title"
+  <Button android:id="@+id/bookmark_title"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"            
@@ -34,5 +34,6 @@
             android:textAppearance="?android:attr/textAppearanceSmall"                
             android:singleLine="false"
             android:textIsSelectable="false"/>
+
 
 </LinearLayout>
