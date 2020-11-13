@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,6 +17,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.google.zxing.client.android.CaptureActivity;
 import com.google.zxing.client.android.camera.CameraManager;
@@ -26,8 +29,7 @@ public class MainActivity extends AppCompatActivity {
     private CameraManager cameraManager;
     private Intent intent, intent1;
     private Menu menu;
-    private static final String TAG = "第一个页面";
-
+    private static final String TAG = "Main页面";
     CameraManager getCameraManager() {
         return cameraManager;
     }
@@ -38,44 +40,24 @@ public class MainActivity extends AppCompatActivity {
         Window window = getWindow();
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_main);
-        urlbutton = (Button) findViewById(R.id.urlbutton);
-        urlbutton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //显式intent
-//                Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
-                //隐式intent
-//                Intent intent = new Intent("android.intent.action.MAIN");
-//                intent.addCategory("android.intent.category.Settings");
-                //其他
-                Intent intent = new Intent(Intent.ACTION_VIEW);
-                intent.setData(Uri.parse("http://www.baidu.com"));
-                startActivity(intent);
-            }
-        });
-        Settingbutton = (Button) findViewById(R.id.Settingbutton);
-        Settingbutton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String data = "MainActivity";
-                Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
-                //传递参数，以extra_data为信号
-//                intent.putExtra("extra_data",data);
-//                startActivity(intent);
-                startActivityForResult(intent, 1);
-            }
-        });
+        //去寻找是否已经有了相机的权限
+        if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
 
-        //电话
-        calbutton = (Button) findViewById(R.id.calbutton);
-        calbutton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent calintent = new Intent(Intent.ACTION_DIAL);
-                calintent.setData(Uri.parse("tel:10086"));
-                startActivity(calintent);
-            }
-        });
+            Toast.makeText(MainActivity.this,"您申请了动态权限",Toast.LENGTH_SHORT).show();
+            //如果有了相机的权限有调用相机
+            Intent intent = new Intent(MainActivity.this, CaptureActivity.class);
+            startActivityForResult(intent, 1);
+
+        } else {
+            //否则去请求相机权限
+            ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.CAMERA}, 100);
+
+        }
+        //取出临时保存的数据
+        if (savedInstanceState != null){
+            String tempData=savedInstanceState.getString("data_key");
+            Toast.makeText(this, tempData, Toast.LENGTH_SHORT).show();
+        }
 
     }
 
@@ -86,8 +68,22 @@ public class MainActivity extends AppCompatActivity {
         switch (requestCode) {
             case 1:
                 if (resultCode == RESULT_OK) {
+                    String returneData = data.getStringExtra("displayContents");
+                    Intent gpurl = new Intent(Intent.ACTION_VIEW);
+                    gpurl.setData(Uri.parse(returneData));
+                    startActivity(gpurl);
+                    Log.e(TAG, "onActivityResult: "+returneData );
+                } else if (resultCode == RESULT_CANCELED) {
+                    Toast.makeText(this, "扫描的二维码有误！", Toast.LENGTH_SHORT).show();
+
+                }
+                break;
+            case 2:
+                if (resultCode == RESULT_OK){
                     String returneData = data.getStringExtra("data_return");
+                    Log.e(TAG, "onActivityResult: "+returneData );
                     Toast.makeText(this, returneData, Toast.LENGTH_SHORT).show();
+
                 } else if (resultCode == RESULT_CANCELED) {
                     Toast.makeText(this, "屁都没有给", Toast.LENGTH_SHORT).show();
 
@@ -96,8 +92,13 @@ public class MainActivity extends AppCompatActivity {
             default:
         }
     }
-
-
+    //页面被销毁后保存临时数据
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        String tempData="保存的临时数据";
+        outState.putString("data_key",tempData);
+    }
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -147,7 +148,7 @@ public class MainActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.setting_item:
                 Intent hdintent = new Intent(MainActivity.this, SettingsActivity.class);
-                startActivityForResult(hdintent, 1);
+                startActivityForResult(hdintent, 2);
                 Toast.makeText(this, "回调设置", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.ccsetting_item:
@@ -176,6 +177,8 @@ public class MainActivity extends AppCompatActivity {
         }
         return true;
     }
+
+
 }
 
 //    @Override
@@ -210,3 +213,43 @@ public class MainActivity extends AppCompatActivity {
 //            ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.CAMERA}, 100);
 //
 //        }
+
+
+//        urlbutton = (Button) findViewById(R.id.urlbutton);
+//        urlbutton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                //显式intent
+////                Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
+//                //隐式intent
+////                Intent intent = new Intent("android.intent.action.MAIN");
+////                intent.addCategory("android.intent.category.Settings");
+//                //其他
+//                Intent intent = new Intent(Intent.ACTION_VIEW);
+//                intent.setData(Uri.parse("http://www.baidu.com"));
+//                startActivity(intent);
+//            }
+//        });
+//        Settingbutton = (Button) findViewById(R.id.Settingbutton);
+//        Settingbutton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                String data = "MainActivity";
+//                Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
+//                //传递参数，以extra_data为信号
+////                intent.putExtra("extra_data",data);
+////                startActivity(intent);
+//                startActivityForResult(intent, 1);
+//            }
+//        });
+//
+//        //电话
+//        calbutton = (Button) findViewById(R.id.calbutton);
+//        calbutton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Intent calintent = new Intent(Intent.ACTION_DIAL);
+//                calintent.setData(Uri.parse("tel:10086"));
+//                startActivity(calintent);
+//            }
+//        });

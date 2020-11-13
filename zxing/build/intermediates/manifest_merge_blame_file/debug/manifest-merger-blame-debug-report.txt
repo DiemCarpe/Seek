@@ -88,7 +88,7 @@
 55               android:label="@string/app_name"
 56    -->
 57    <application android:allowBackup="true" >
-57-->D:\Android\Seek\zxing\src\main\AndroidManifest.xml:45:3-142:17
+57-->D:\Android\Seek\zxing\src\main\AndroidManifest.xml:45:3-127:17
 57-->D:\Android\Seek\zxing\src\main\AndroidManifest.xml:46:16-42
 58        <activity
 58-->D:\Android\Seek\zxing\src\main\AndroidManifest.xml:47:5-89:16
@@ -289,58 +289,15 @@
 162            </intent-filter>
 163        </activity>
 164        <activity
-164-->D:\Android\Seek\zxing\src\main\AndroidManifest.xml:121:5-128:16
-165            android:name="com.google.zxing.client.android.share.ShareActivity"
-165-->D:\Android\Seek\zxing\src\main\AndroidManifest.xml:121:15-50
-166            android:screenOrientation="user"
-166-->D:\Android\Seek\zxing\src\main\AndroidManifest.xml:123:15-47
-167            android:stateNotNeeded="true" >
-167-->D:\Android\Seek\zxing\src\main\AndroidManifest.xml:122:15-44
-168            <intent-filter>
-168-->D:\Android\Seek\zxing\src\main\AndroidManifest.xml:124:7-127:23
-169                <action android:name="com.google.zxing.client.android.SHARE" />
-169-->D:\Android\Seek\zxing\src\main\AndroidManifest.xml:125:9-71
-169-->D:\Android\Seek\zxing\src\main\AndroidManifest.xml:125:17-69
+164-->D:\Android\Seek\zxing\src\main\AndroidManifest.xml:123:5-126:46
+165            android:name="com.google.zxing.client.android.HelpActivity"
+165-->D:\Android\Seek\zxing\src\main\AndroidManifest.xml:123:15-43
+166            android:label="@string/menu_help"
+166-->D:\Android\Seek\zxing\src\main\AndroidManifest.xml:124:15-48
+167            android:screenOrientation="user"
+167-->D:\Android\Seek\zxing\src\main\AndroidManifest.xml:125:15-47
+168            android:stateNotNeeded="true" />
+168-->D:\Android\Seek\zxing\src\main\AndroidManifest.xml:126:15-44
+169    </application>
 170
-171                <category android:name="android.intent.category.DEFAULT" />
-171-->D:\Android\Seek\zxing\src\main\AndroidManifest.xml:59:9-67
-171-->D:\Android\Seek\zxing\src\main\AndroidManifest.xml:59:19-65
-172            </intent-filter>
-173        </activity>
-174        <activity
-174-->D:\Android\Seek\zxing\src\main\AndroidManifest.xml:129:5-131:46
-175            android:name="com.google.zxing.client.android.history.HistoryActivity"
-175-->D:\Android\Seek\zxing\src\main\AndroidManifest.xml:129:15-54
-176            android:label="@string/history_title"
-176-->D:\Android\Seek\zxing\src\main\AndroidManifest.xml:130:15-52
-177            android:stateNotNeeded="true" />
-177-->D:\Android\Seek\zxing\src\main\AndroidManifest.xml:131:15-44
-178        <activity
-178-->D:\Android\Seek\zxing\src\main\AndroidManifest.xml:132:5-134:46
-179            android:name="com.google.zxing.client.android.share.BookmarkPickerActivity"
-179-->D:\Android\Seek\zxing\src\main\AndroidManifest.xml:132:15-59
-180            android:label="@string/bookmark_picker_name"
-180-->D:\Android\Seek\zxing\src\main\AndroidManifest.xml:133:15-59
-181            android:stateNotNeeded="true" />
-181-->D:\Android\Seek\zxing\src\main\AndroidManifest.xml:134:15-44
-182        <activity
-182-->D:\Android\Seek\zxing\src\main\AndroidManifest.xml:135:5-137:46
-183            android:name="com.google.zxing.client.android.share.AppPickerActivity"
-183-->D:\Android\Seek\zxing\src\main\AndroidManifest.xml:135:15-54
-184            android:label="@string/app_picker_name"
-184-->D:\Android\Seek\zxing\src\main\AndroidManifest.xml:136:15-54
-185            android:stateNotNeeded="true" />
-185-->D:\Android\Seek\zxing\src\main\AndroidManifest.xml:137:15-44
-186        <activity
-186-->D:\Android\Seek\zxing\src\main\AndroidManifest.xml:138:5-141:46
-187            android:name="com.google.zxing.client.android.HelpActivity"
-187-->D:\Android\Seek\zxing\src\main\AndroidManifest.xml:138:15-43
-188            android:label="@string/menu_help"
-188-->D:\Android\Seek\zxing\src\main\AndroidManifest.xml:139:15-48
-189            android:screenOrientation="user"
-189-->D:\Android\Seek\zxing\src\main\AndroidManifest.xml:140:15-47
-190            android:stateNotNeeded="true" />
-190-->D:\Android\Seek\zxing\src\main\AndroidManifest.xml:141:15-44
-191    </application>
-192
-193</manifest>
+171</manifest>

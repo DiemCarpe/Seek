@@ -1,12 +1,12 @@
 -- Merging decision tree log ---
 manifest
-ADDED from D:\Android\Seek\zxing\src\main\AndroidManifest.xml:17:1-144:12
-INJECTED from D:\Android\Seek\zxing\src\main\AndroidManifest.xml:17:1-144:12
-INJECTED from D:\Android\Seek\zxing\src\main\AndroidManifest.xml:17:1-144:12
-INJECTED from D:\Android\Seek\zxing\src\main\AndroidManifest.xml:17:1-144:12
-INJECTED from D:\Android\Seek\zxing\src\main\AndroidManifest.xml:17:1-144:12
-INJECTED from D:\Android\Seek\zxing\src\main\AndroidManifest.xml:17:1-144:12
-INJECTED from D:\Android\Seek\zxing\src\main\AndroidManifest.xml:17:1-144:12
+ADDED from D:\Android\Seek\zxing\src\main\AndroidManifest.xml:17:1-129:12
+INJECTED from D:\Android\Seek\zxing\src\main\AndroidManifest.xml:17:1-129:12
+INJECTED from D:\Android\Seek\zxing\src\main\AndroidManifest.xml:17:1-129:12
+INJECTED from D:\Android\Seek\zxing\src\main\AndroidManifest.xml:17:1-129:12
+INJECTED from D:\Android\Seek\zxing\src\main\AndroidManifest.xml:17:1-129:12
+INJECTED from D:\Android\Seek\zxing\src\main\AndroidManifest.xml:17:1-129:12
+INJECTED from D:\Android\Seek\zxing\src\main\AndroidManifest.xml:17:1-129:12
 	package
 		ADDED from D:\Android\Seek\zxing\src\main\AndroidManifest.xml:18:11-52
 		INJECTED from D:\Android\Seek\zxing\src\main\AndroidManifest.xml
@@ -86,7 +86,7 @@ ADDED from D:\Android\Seek\zxing\src\main\AndroidManifest.xml:40:3-80
 	android:name
 		ADDED from D:\Android\Seek\zxing\src\main\AndroidManifest.xml:40:17-53
 application
-ADDED from D:\Android\Seek\zxing\src\main\AndroidManifest.xml:45:3-142:17
+ADDED from D:\Android\Seek\zxing\src\main\AndroidManifest.xml:45:3-127:17
 	android:allowBackup
 		ADDED from D:\Android\Seek\zxing\src\main\AndroidManifest.xml:46:16-42
 activity#com.google.zxing.client.android.CaptureActivity
@@ -183,54 +183,16 @@ action#com.google.zxing.client.android.SEARCH_BOOK_CONTENTS
 ADDED from D:\Android\Seek\zxing\src\main\AndroidManifest.xml:117:9-86
 	android:name
 		ADDED from D:\Android\Seek\zxing\src\main\AndroidManifest.xml:117:17-84
-activity#com.google.zxing.client.android.share.ShareActivity
-ADDED from D:\Android\Seek\zxing\src\main\AndroidManifest.xml:121:5-128:16
-	android:screenOrientation
-		ADDED from D:\Android\Seek\zxing\src\main\AndroidManifest.xml:123:15-47
-	android:stateNotNeeded
-		ADDED from D:\Android\Seek\zxing\src\main\AndroidManifest.xml:122:15-44
-	android:name
-		ADDED from D:\Android\Seek\zxing\src\main\AndroidManifest.xml:121:15-50
-intent-filter#action:name:com.google.zxing.client.android.SHARE+category:name:android.intent.category.DEFAULT
-ADDED from D:\Android\Seek\zxing\src\main\AndroidManifest.xml:124:7-127:23
-action#com.google.zxing.client.android.SHARE
-ADDED from D:\Android\Seek\zxing\src\main\AndroidManifest.xml:125:9-71
-	android:name
-		ADDED from D:\Android\Seek\zxing\src\main\AndroidManifest.xml:125:17-69
-activity#com.google.zxing.client.android.history.HistoryActivity
-ADDED from D:\Android\Seek\zxing\src\main\AndroidManifest.xml:129:5-131:46
-	android:stateNotNeeded
-		ADDED from D:\Android\Seek\zxing\src\main\AndroidManifest.xml:131:15-44
-	android:label
-		ADDED from D:\Android\Seek\zxing\src\main\AndroidManifest.xml:130:15-52
-	android:name
-		ADDED from D:\Android\Seek\zxing\src\main\AndroidManifest.xml:129:15-54
-activity#com.google.zxing.client.android.share.BookmarkPickerActivity
-ADDED from D:\Android\Seek\zxing\src\main\AndroidManifest.xml:132:5-134:46
-	android:stateNotNeeded
-		ADDED from D:\Android\Seek\zxing\src\main\AndroidManifest.xml:134:15-44
-	android:label
-		ADDED from D:\Android\Seek\zxing\src\main\AndroidManifest.xml:133:15-59
-	android:name
-		ADDED from D:\Android\Seek\zxing\src\main\AndroidManifest.xml:132:15-59
-activity#com.google.zxing.client.android.share.AppPickerActivity
-ADDED from D:\Android\Seek\zxing\src\main\AndroidManifest.xml:135:5-137:46
-	android:stateNotNeeded
-		ADDED from D:\Android\Seek\zxing\src\main\AndroidManifest.xml:137:15-44
-	android:label
-		ADDED from D:\Android\Seek\zxing\src\main\AndroidManifest.xml:136:15-54
-	android:name
-		ADDED from D:\Android\Seek\zxing\src\main\AndroidManifest.xml:135:15-54
 activity#com.google.zxing.client.android.HelpActivity
-ADDED from D:\Android\Seek\zxing\src\main\AndroidManifest.xml:138:5-141:46
+ADDED from D:\Android\Seek\zxing\src\main\AndroidManifest.xml:123:5-126:46
 	android:screenOrientation
-		ADDED from D:\Android\Seek\zxing\src\main\AndroidManifest.xml:140:15-47
+		ADDED from D:\Android\Seek\zxing\src\main\AndroidManifest.xml:125:15-47
 	android:stateNotNeeded
-		ADDED from D:\Android\Seek\zxing\src\main\AndroidManifest.xml:141:15-44
+		ADDED from D:\Android\Seek\zxing\src\main\AndroidManifest.xml:126:15-44
 	android:label
-		ADDED from D:\Android\Seek\zxing\src\main\AndroidManifest.xml:139:15-48
+		ADDED from D:\Android\Seek\zxing\src\main\AndroidManifest.xml:124:15-48
 	android:name
-		ADDED from D:\Android\Seek\zxing\src\main\AndroidManifest.xml:138:15-43
+		ADDED from D:\Android\Seek\zxing\src\main\AndroidManifest.xml:123:15-43
 uses-sdk
 INJECTED from D:\Android\Seek\zxing\src\main\AndroidManifest.xml reason: use-sdk injection requested
 INJECTED from D:\Android\Seek\zxing\src\main\AndroidManifest.xml

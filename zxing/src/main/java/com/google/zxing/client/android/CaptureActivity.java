@@ -601,12 +601,14 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
             }
         }
 
-        Intent it = new Intent();
-        it.putExtra("displayContents", "条码：" + displayContents);
-        setResult(1, it);
-        finish();
+        Intent gpurl = new Intent();
+        gpurl.putExtra("displayContents", displayContents);
+        setResult(RESULT_OK, gpurl);
+        Log.d(TAG, "handleDecodeInternally() returned: " + displayContents);
+//        finish();
 
     }
+
 
     // Briefly show the contents of the barcode, then handle the result outside Barcode Scanner.
     private void handleDecodeExternally(Result rawResult, ResultHandler resultHandler, Bitmap barcode) {

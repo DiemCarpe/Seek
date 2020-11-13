@@ -3,6 +3,7 @@ package com.seek;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -17,6 +18,9 @@ public class SettingsActivity extends AppCompatActivity {
     private TextView textView;
     private Button button2;
     private static final String TAG = "设置页面";
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
