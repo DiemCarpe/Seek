@@ -10,18 +10,14 @@ android:orientation="vertical"
 
 
 <Button
-    android:id="@+id/Settingbutton"
+    android:id="@+id/scanbutton"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:text="设置" />
-<Button
-    android:id="@+id/urlbutton"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:text="链接"/>
-<Button
-    android:id="@+id/calbutton"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:text="电话"/>
+    android:text="扫描器" />
+    <Button
+        android:id="@+id/button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Toast提示" />
+
 </LinearLayout>

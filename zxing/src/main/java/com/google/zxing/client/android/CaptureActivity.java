@@ -352,415 +352,431 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
         return super.onCreateOptionsMenu(menu);
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.addFlags(Intents.FLAG_NEW_DOC);
-        //linhaitao
-        if (item.getItemId() == R.id.menu_settings) {
-            intent.setClassName(this, PreferencesActivity.class.getName());
-            startActivity(intent);
-        } else if (item.getItemId() == R.id.menu_help) {
-            intent.setClassName(this, HelpActivity.class.getName());
-            startActivity(intent);
-        } else {
-            return super.onOptionsItemSelected(item);
-        }
-//    switch (item.getItemId()) {
-//      case R.id.menu_share:
-//        intent.setClassName(this, ShareActivity.class.getName());
-//        startActivity(intent);
-//        break;
-//      case R.id.menu_history:
-//        intent.setClassName(this, HistoryActivity.class.getName());
-//        startActivityForResult(intent, HISTORY_REQUEST_CODE);
-//        break;
-//      case R.id.menu_settings:
-//        intent.setClassName(this, PreferencesActivity.class.getName());
-//        startActivity(intent);
-//        break;
-//      case R.id.menu_help:
-//        intent.setClassName(this, HelpActivity.class.getName());
-//        startActivity(intent);
-//        break;
-//      default:
-//        return super.onOptionsItemSelected(item);
+//        @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        switch (item.getItemId()){
+//            case R.id.menu_settings:
+//                Toast.makeText(this, "设置点击无效", Toast.LENGTH_SHORT).show();
+//                break;
+//            case R.id.menu_help:
+//                Toast.makeText(this, "求助无效，请拨打", Toast.LENGTH_SHORT).show();
+//                break;
+//            default:
+//        }
+//        return true;
 //    }
-        return true;
-    }
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        Intent intent = new Intent(Intent.ACTION_VIEW);
+//        intent.addFlags(Intents.FLAG_NEW_DOC);
+//        //linhaitao
+//        if (item.getItemId() == R.id.menu_settings) {
+//            intent.setClassName(this, PreferencesActivity.class.getName());
+//            startActivity(intent);
+//        } else if (item.getItemId() == R.id.menu_help) {
+//            intent.setClassName(this, HelpActivity.class.getName());
+//            startActivity(intent);
+//        } else {
+//            return super.onOptionsItemSelected(item);
+//        }
+//        switch (item.getItemId()) {
+//            case R.id.menu_share:
+//                intent.setClassName(this, ShareActivity.class.getName());
+//                startActivity(intent);
+//                break;
+//            case R.id.menu_history:
+//                intent.setClassName(this, HistoryActivity.class.getName());
+//                startActivityForResult(intent, HISTORY_REQUEST_CODE);
+//                break;
+//            case R.id.menu_settings:
+//                intent.setClassName(this, PreferencesActivity.class.getName());
+//                startActivity(intent);
+//                break;
+//            case R.id.menu_help:
+//                intent.setClassName(this, HelpActivity.class.getName());
+//                startActivity(intent);
+//                break;
+//            default:
+//                return super.onOptionsItemSelected(item);
+////    }
+//            return true;
+//        }
 
 
-    private void decodeOrStoreSavedBitmap(Bitmap bitmap, Result result) {
-        // Bitmap isn't used yet -- will be used soon
-        if (handler == null) {
-            savedResultToShow = result;
-        } else {
-            if (result != null) {
+        private void decodeOrStoreSavedBitmap (Bitmap bitmap, Result result){
+            // Bitmap isn't used yet -- will be used soon
+            if (handler == null) {
                 savedResultToShow = result;
-            }
-            if (savedResultToShow != null) {
-                Message message = Message.obtain(handler, R.id.decode_succeeded, savedResultToShow);
-                handler.sendMessage(message);
-            }
-            savedResultToShow = null;
-        }
-    }
-
-    @Override
-    public void surfaceCreated(SurfaceHolder holder) {
-        if (holder == null) {
-            Log.e(TAG, "*** WARNING *** surfaceCreated() gave us a null surface!");
-        }
-        if (!hasSurface) {
-            hasSurface = true;
-            initCamera(holder);
-        }
-    }
-
-    @Override
-    public void surfaceDestroyed(SurfaceHolder holder) {
-        hasSurface = false;
-    }
-
-    @Override
-    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-        // do nothing
-    }
-
-    /**
-     * A valid barcode has been found, so give an indication of success and show the results.
-     *
-     * @param rawResult   The contents of the barcode.
-     * @param scaleFactor amount by which thumbnail was scaled
-     * @param barcode     A greyscale bitmap of the camera data which was decoded.
-     */
-    public void handleDecode(Result rawResult, Bitmap barcode, float scaleFactor) {
-        inactivityTimer.onActivity();
-        lastResult = rawResult;
-        ResultHandler resultHandler = ResultHandlerFactory.makeResultHandler(this, rawResult);
-
-        boolean fromLiveScan = barcode != null;
-        if (fromLiveScan) {
-            // Then not from history, so beep/vibrate and we have an image to draw on
-            beepManager.playBeepSoundAndVibrate();
-            drawResultPoints(barcode, scaleFactor, rawResult);
-        }
-
-        switch (source) {
-            case NATIVE_APP_INTENT:
-            case PRODUCT_SEARCH_LINK:
-                handleDecodeExternally(rawResult, resultHandler, barcode);
-                break;
-            case ZXING_LINK:
-                if (scanFromWebPageManager == null || !scanFromWebPageManager.isScanFromWebPage()) {
-                    handleDecodeInternally(rawResult, resultHandler, barcode);
-                } else {
-                    handleDecodeExternally(rawResult, resultHandler, barcode);
-                }
-                break;
-            case NONE:
-                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-                if (fromLiveScan && prefs.getBoolean(PreferencesActivity.KEY_BULK_MODE, false)) {
-                    Toast.makeText(getApplicationContext(),
-                            getResources().getString(R.string.msg_bulk_mode_scanned) + " (" + rawResult.getText() + ')',
-                            Toast.LENGTH_SHORT).show();
-                    maybeSetClipboard(resultHandler);
-                    // Wait a moment or else it will scan the same barcode continuously about 3 times
-                    restartPreviewAfterDelay(BULK_MODE_SCAN_DELAY_MS);
-                } else {
-                    handleDecodeInternally(rawResult, resultHandler, barcode);
-                }
-                break;
-        }
-    }
-
-    /**
-     * Superimpose a line for 1D or dots for 2D to highlight the key features of the barcode.
-     *
-     * @param barcode     A bitmap of the captured image.
-     * @param scaleFactor amount by which thumbnail was scaled
-     * @param rawResult   The decoded results which contains the points to draw.
-     */
-    private void drawResultPoints(Bitmap barcode, float scaleFactor, Result rawResult) {
-        ResultPoint[] points = rawResult.getResultPoints();
-        if (points != null && points.length > 0) {
-            Canvas canvas = new Canvas(barcode);
-            Paint paint = new Paint();
-            paint.setColor(getResources().getColor(R.color.result_points));
-            if (points.length == 2) {
-                paint.setStrokeWidth(4.0f);
-                drawLine(canvas, paint, points[0], points[1], scaleFactor);
-            } else if (points.length == 4 &&
-                    (rawResult.getBarcodeFormat() == BarcodeFormat.UPC_A ||
-                            rawResult.getBarcodeFormat() == BarcodeFormat.EAN_13)) {
-                // Hacky special case -- draw two lines, for the barcode and metadata
-                drawLine(canvas, paint, points[0], points[1], scaleFactor);
-                drawLine(canvas, paint, points[2], points[3], scaleFactor);
             } else {
-                paint.setStrokeWidth(10.0f);
-                for (ResultPoint point : points) {
-                    if (point != null) {
-                        canvas.drawPoint(scaleFactor * point.getX(), scaleFactor * point.getY(), paint);
+                if (result != null) {
+                    savedResultToShow = result;
+                }
+                if (savedResultToShow != null) {
+                    Message message = Message.obtain(handler, R.id.decode_succeeded, savedResultToShow);
+                    handler.sendMessage(message);
+                }
+                savedResultToShow = null;
+            }
+        }
+
+        @Override
+        public void surfaceCreated (SurfaceHolder holder){
+            if (holder == null) {
+                Log.e(TAG, "*** WARNING *** surfaceCreated() gave us a null surface!");
+            }
+            if (!hasSurface) {
+                hasSurface = true;
+                initCamera(holder);
+            }
+        }
+
+        @Override
+        public void surfaceDestroyed (SurfaceHolder holder){
+            hasSurface = false;
+        }
+
+        @Override
+        public void surfaceChanged (SurfaceHolder holder,int format, int width, int height){
+            // do nothing
+        }
+
+        /**
+         * A valid barcode has been found, so give an indication of success and show the results.
+         *
+         * @param rawResult   The contents of the barcode.
+         * @param scaleFactor amount by which thumbnail was scaled
+         * @param barcode     A greyscale bitmap of the camera data which was decoded.
+         */
+        public void handleDecode (Result rawResult, Bitmap barcode,float scaleFactor){
+            inactivityTimer.onActivity();
+            lastResult = rawResult;
+            ResultHandler resultHandler = ResultHandlerFactory.makeResultHandler(this, rawResult);
+
+            boolean fromLiveScan = barcode != null;
+            if (fromLiveScan) {
+                // Then not from history, so beep/vibrate and we have an image to draw on
+                beepManager.playBeepSoundAndVibrate();
+                drawResultPoints(barcode, scaleFactor, rawResult);
+            }
+
+            switch (source) {
+                case NATIVE_APP_INTENT:
+                case PRODUCT_SEARCH_LINK:
+                    handleDecodeExternally(rawResult, resultHandler, barcode);
+                    break;
+                case ZXING_LINK:
+                    if (scanFromWebPageManager == null || !scanFromWebPageManager.isScanFromWebPage()) {
+                        handleDecodeInternally(rawResult, resultHandler, barcode);
+                    } else {
+                        handleDecodeExternally(rawResult, resultHandler, barcode);
+                    }
+                    break;
+                case NONE:
+                    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+                    if (fromLiveScan && prefs.getBoolean(PreferencesActivity.KEY_BULK_MODE, false)) {
+                        Toast.makeText(getApplicationContext(),
+                                getResources().getString(R.string.msg_bulk_mode_scanned) + " (" + rawResult.getText() + ')',
+                                Toast.LENGTH_SHORT).show();
+                        maybeSetClipboard(resultHandler);
+                        // Wait a moment or else it will scan the same barcode continuously about 3 times
+                        restartPreviewAfterDelay(BULK_MODE_SCAN_DELAY_MS);
+                    } else {
+                        handleDecodeInternally(rawResult, resultHandler, barcode);
+                    }
+                    break;
+            }
+        }
+
+        /**
+         * Superimpose a line for 1D or dots for 2D to highlight the key features of the barcode.
+         *
+         * @param barcode     A bitmap of the captured image.
+         * @param scaleFactor amount by which thumbnail was scaled
+         * @param rawResult   The decoded results which contains the points to draw.
+         */
+        private void drawResultPoints (Bitmap barcode,float scaleFactor, Result rawResult){
+            ResultPoint[] points = rawResult.getResultPoints();
+            if (points != null && points.length > 0) {
+                Canvas canvas = new Canvas(barcode);
+                Paint paint = new Paint();
+                paint.setColor(getResources().getColor(R.color.result_points));
+                if (points.length == 2) {
+                    paint.setStrokeWidth(4.0f);
+                    drawLine(canvas, paint, points[0], points[1], scaleFactor);
+                } else if (points.length == 4 &&
+                        (rawResult.getBarcodeFormat() == BarcodeFormat.UPC_A ||
+                                rawResult.getBarcodeFormat() == BarcodeFormat.EAN_13)) {
+                    // Hacky special case -- draw two lines, for the barcode and metadata
+                    drawLine(canvas, paint, points[0], points[1], scaleFactor);
+                    drawLine(canvas, paint, points[2], points[3], scaleFactor);
+                } else {
+                    paint.setStrokeWidth(10.0f);
+                    for (ResultPoint point : points) {
+                        if (point != null) {
+                            canvas.drawPoint(scaleFactor * point.getX(), scaleFactor * point.getY(), paint);
+                        }
                     }
                 }
             }
         }
-    }
 
-    private static void drawLine(Canvas canvas, Paint paint, ResultPoint a, ResultPoint b, float scaleFactor) {
-        if (a != null && b != null) {
-            canvas.drawLine(scaleFactor * a.getX(),
-                    scaleFactor * a.getY(),
-                    scaleFactor * b.getX(),
-                    scaleFactor * b.getY(),
-                    paint);
+        private static void drawLine (Canvas canvas, Paint paint, ResultPoint a, ResultPoint b,
+        float scaleFactor){
+            if (a != null && b != null) {
+                canvas.drawLine(scaleFactor * a.getX(),
+                        scaleFactor * a.getY(),
+                        scaleFactor * b.getX(),
+                        scaleFactor * b.getY(),
+                        paint);
+            }
         }
-    }
 
-    // Put up our own UI for how to handle the decoded contents.
-    private void handleDecodeInternally(Result rawResult, ResultHandler resultHandler, Bitmap barcode) {
+        // Put up our own UI for how to handle the decoded contents.
+        private void handleDecodeInternally (Result rawResult, ResultHandler resultHandler, Bitmap
+        barcode){
 
-        maybeSetClipboard(resultHandler);
+            maybeSetClipboard(resultHandler);
 
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
-        if (resultHandler.getDefaultButtonID() != null && prefs.getBoolean(PreferencesActivity.KEY_AUTO_OPEN_WEB, false)) {
-            resultHandler.handleButtonPress(resultHandler.getDefaultButtonID());
-            return;
-        }
+            if (resultHandler.getDefaultButtonID() != null && prefs.getBoolean(PreferencesActivity.KEY_AUTO_OPEN_WEB, false)) {
+                resultHandler.handleButtonPress(resultHandler.getDefaultButtonID());
+                return;
+            }
 
 //    statusView.setVisibility(View.GONE);
 //    viewfinderView.setVisibility(View.GONE);
 //    resultView.setVisibility(View.VISIBLE);
 
-        ImageView barcodeImageView = (ImageView) findViewById(R.id.barcode_image_view);
-        if (barcode == null) {
-            barcodeImageView.setImageBitmap(BitmapFactory.decodeResource(getResources(),
-                    R.drawable.launcher_icon));
-        } else {
-            barcodeImageView.setImageBitmap(barcode);
-        }
+            ImageView barcodeImageView = (ImageView) findViewById(R.id.barcode_image_view);
+            if (barcode == null) {
+                barcodeImageView.setImageBitmap(BitmapFactory.decodeResource(getResources(),
+                        R.drawable.launcher_icon));
+            } else {
+                barcodeImageView.setImageBitmap(barcode);
+            }
 
-        TextView formatTextView = (TextView) findViewById(R.id.format_text_view);
-        formatTextView.setText(rawResult.getBarcodeFormat().toString());
-        Log.e("CaptureActivity", "格式：" + rawResult.getBarcodeFormat().toString());
+            TextView formatTextView = (TextView) findViewById(R.id.format_text_view);
+            formatTextView.setText(rawResult.getBarcodeFormat().toString());
+            Log.e("CaptureActivity", "格式：" + rawResult.getBarcodeFormat().toString());
 
-        TextView typeTextView = (TextView) findViewById(R.id.type_text_view);
-        typeTextView.setText(resultHandler.getType().toString());
-        Log.e("CaptureActivity", "类型：" + resultHandler.getType().toString());
+            TextView typeTextView = (TextView) findViewById(R.id.type_text_view);
+            typeTextView.setText(resultHandler.getType().toString());
+            Log.e("CaptureActivity", "类型：" + resultHandler.getType().toString());
 
-        DateFormat formatter = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT);
-        TextView timeTextView = (TextView) findViewById(R.id.time_text_view);
-        timeTextView.setText(formatter.format(rawResult.getTimestamp()));
-        Log.e("CaptureActivity", "时间：" + formatter.format(rawResult.getTimestamp()));
-        TextView metaTextView = (TextView) findViewById(R.id.meta_text_view);
-        View metaTextViewLabel = findViewById(R.id.meta_text_view_label);
-        metaTextView.setVisibility(View.GONE);
-        metaTextViewLabel.setVisibility(View.GONE);
-        Map<ResultMetadataType, Object> metadata = rawResult.getResultMetadata();
-        if (metadata != null) {
-            StringBuilder metadataText = new StringBuilder(20);
-            for (Map.Entry<ResultMetadataType, Object> entry : metadata.entrySet()) {
-                if (DISPLAYABLE_METADATA_TYPES.contains(entry.getKey())) {
-                    metadataText.append(entry.getValue()).append('\n');
+            DateFormat formatter = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT);
+            TextView timeTextView = (TextView) findViewById(R.id.time_text_view);
+            timeTextView.setText(formatter.format(rawResult.getTimestamp()));
+            Log.e("CaptureActivity", "时间：" + formatter.format(rawResult.getTimestamp()));
+            TextView metaTextView = (TextView) findViewById(R.id.meta_text_view);
+            View metaTextViewLabel = findViewById(R.id.meta_text_view_label);
+            metaTextView.setVisibility(View.GONE);
+            metaTextViewLabel.setVisibility(View.GONE);
+            Map<ResultMetadataType, Object> metadata = rawResult.getResultMetadata();
+            if (metadata != null) {
+                StringBuilder metadataText = new StringBuilder(20);
+                for (Map.Entry<ResultMetadataType, Object> entry : metadata.entrySet()) {
+                    if (DISPLAYABLE_METADATA_TYPES.contains(entry.getKey())) {
+                        metadataText.append(entry.getValue()).append('\n');
+                    }
+                }
+                if (metadataText.length() > 0) {
+                    metadataText.setLength(metadataText.length() - 1);
+                    metaTextView.setText(metadataText);
+                    Log.e("CaptureActivity", "元数据：" + metadataText + "");
+                    metaTextView.setVisibility(View.VISIBLE);
+                    metaTextViewLabel.setVisibility(View.VISIBLE);
                 }
             }
-            if (metadataText.length() > 0) {
-                metadataText.setLength(metadataText.length() - 1);
-                metaTextView.setText(metadataText);
-                Log.e("CaptureActivity", "元数据：" + metadataText + "");
-                metaTextView.setVisibility(View.VISIBLE);
-                metaTextViewLabel.setVisibility(View.VISIBLE);
+
+            CharSequence displayContents = resultHandler.getDisplayContents();
+            TextView contentsTextView = (TextView) findViewById(R.id.contents_text_view);
+            contentsTextView.setText(displayContents);
+            Log.e("CaptureActivity", "条码：" + displayContents);
+
+            int scaledSize = Math.max(22, 32 - displayContents.length() / 4);
+            contentsTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, scaledSize);
+
+            TextView supplementTextView = (TextView) findViewById(R.id.contents_supplement_text_view);
+            supplementTextView.setText("");
+            supplementTextView.setOnClickListener(null);
+
+
+            int buttonCount = resultHandler.getButtonCount();
+            ViewGroup buttonView = (ViewGroup) findViewById(R.id.result_button_view);
+            buttonView.requestFocus();
+            for (int x = 0; x < ResultHandler.MAX_BUTTON_COUNT; x++) {
+                TextView button = (TextView) buttonView.getChildAt(x);
+                if (x < buttonCount) {
+                    button.setVisibility(View.VISIBLE);
+                    button.setText(resultHandler.getButtonText(x));
+                    button.setOnClickListener(new ResultButtonListener(resultHandler, x));
+                } else {
+                    button.setVisibility(View.GONE);
+                }
             }
-        }
 
-        CharSequence displayContents = resultHandler.getDisplayContents();
-        TextView contentsTextView = (TextView) findViewById(R.id.contents_text_view);
-        contentsTextView.setText(displayContents);
-        Log.e("CaptureActivity", "条码：" + displayContents);
-
-        int scaledSize = Math.max(22, 32 - displayContents.length() / 4);
-        contentsTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, scaledSize);
-
-        TextView supplementTextView = (TextView) findViewById(R.id.contents_supplement_text_view);
-        supplementTextView.setText("");
-        supplementTextView.setOnClickListener(null);
-
-
-        int buttonCount = resultHandler.getButtonCount();
-        ViewGroup buttonView = (ViewGroup) findViewById(R.id.result_button_view);
-        buttonView.requestFocus();
-        for (int x = 0; x < ResultHandler.MAX_BUTTON_COUNT; x++) {
-            TextView button = (TextView) buttonView.getChildAt(x);
-            if (x < buttonCount) {
-                button.setVisibility(View.VISIBLE);
-                button.setText(resultHandler.getButtonText(x));
-                button.setOnClickListener(new ResultButtonListener(resultHandler, x));
-            } else {
-                button.setVisibility(View.GONE);
-            }
-        }
-
-        Intent gpurl = new Intent();
-        gpurl.putExtra("displayContents", displayContents);
-        setResult(RESULT_OK, gpurl);
-        Log.d(TAG, "handleDecodeInternally() returned: " + displayContents);
+            Intent gpurl = new Intent();
+            gpurl.putExtra("displayContents", displayContents);
+            setResult(RESULT_OK, gpurl);
+            Log.d(TAG, "handleDecodeInternally() returned: " + displayContents);
 //        finish();
 
-    }
-
-
-    // Briefly show the contents of the barcode, then handle the result outside Barcode Scanner.
-    private void handleDecodeExternally(Result rawResult, ResultHandler resultHandler, Bitmap barcode) {
-
-        if (barcode != null) {
-            viewfinderView.drawResultBitmap(barcode);
         }
 
-        long resultDurationMS;
-        if (getIntent() == null) {
-            resultDurationMS = DEFAULT_INTENT_RESULT_DURATION_MS;
-        } else {
-            resultDurationMS = getIntent().getLongExtra(Intents.Scan.RESULT_DISPLAY_DURATION_MS,
-                    DEFAULT_INTENT_RESULT_DURATION_MS);
-        }
 
-        if (resultDurationMS > 0) {
-            String rawResultString = String.valueOf(rawResult);
-            if (rawResultString.length() > 32) {
-                rawResultString = rawResultString.substring(0, 32) + " ...";
+        // Briefly show the contents of the barcode, then handle the result outside Barcode Scanner.
+        private void handleDecodeExternally (Result rawResult, ResultHandler resultHandler, Bitmap
+        barcode){
+
+            if (barcode != null) {
+                viewfinderView.drawResultBitmap(barcode);
             }
-            statusView.setText(getString(resultHandler.getDisplayTitle()) + " : " + rawResultString);
-        }
 
-        maybeSetClipboard(resultHandler);
+            long resultDurationMS;
+            if (getIntent() == null) {
+                resultDurationMS = DEFAULT_INTENT_RESULT_DURATION_MS;
+            } else {
+                resultDurationMS = getIntent().getLongExtra(Intents.Scan.RESULT_DISPLAY_DURATION_MS,
+                        DEFAULT_INTENT_RESULT_DURATION_MS);
+            }
 
-        switch (source) {
-            case NATIVE_APP_INTENT:
-                // Hand back whatever action they requested - this can be changed to Intents.Scan.ACTION when
-                // the deprecated intent is retired.
-                Intent intent = new Intent(getIntent().getAction());
-                intent.addFlags(Intents.FLAG_NEW_DOC);
-                intent.putExtra(Intents.Scan.RESULT, rawResult.toString());
-                intent.putExtra(Intents.Scan.RESULT_FORMAT, rawResult.getBarcodeFormat().toString());
-                byte[] rawBytes = rawResult.getRawBytes();
-                if (rawBytes != null && rawBytes.length > 0) {
-                    intent.putExtra(Intents.Scan.RESULT_BYTES, rawBytes);
+            if (resultDurationMS > 0) {
+                String rawResultString = String.valueOf(rawResult);
+                if (rawResultString.length() > 32) {
+                    rawResultString = rawResultString.substring(0, 32) + " ...";
                 }
-                Map<ResultMetadataType, ?> metadata = rawResult.getResultMetadata();
-                if (metadata != null) {
-                    if (metadata.containsKey(ResultMetadataType.UPC_EAN_EXTENSION)) {
-                        intent.putExtra(Intents.Scan.RESULT_UPC_EAN_EXTENSION,
-                                metadata.get(ResultMetadataType.UPC_EAN_EXTENSION).toString());
+                statusView.setText(getString(resultHandler.getDisplayTitle()) + " : " + rawResultString);
+            }
+
+            maybeSetClipboard(resultHandler);
+
+            switch (source) {
+                case NATIVE_APP_INTENT:
+                    // Hand back whatever action they requested - this can be changed to Intents.Scan.ACTION when
+                    // the deprecated intent is retired.
+                    Intent intent = new Intent(getIntent().getAction());
+                    intent.addFlags(Intents.FLAG_NEW_DOC);
+                    intent.putExtra(Intents.Scan.RESULT, rawResult.toString());
+                    intent.putExtra(Intents.Scan.RESULT_FORMAT, rawResult.getBarcodeFormat().toString());
+                    byte[] rawBytes = rawResult.getRawBytes();
+                    if (rawBytes != null && rawBytes.length > 0) {
+                        intent.putExtra(Intents.Scan.RESULT_BYTES, rawBytes);
                     }
-                    Number orientation = (Number) metadata.get(ResultMetadataType.ORIENTATION);
-                    if (orientation != null) {
-                        intent.putExtra(Intents.Scan.RESULT_ORIENTATION, orientation.intValue());
-                    }
-                    String ecLevel = (String) metadata.get(ResultMetadataType.ERROR_CORRECTION_LEVEL);
-                    if (ecLevel != null) {
-                        intent.putExtra(Intents.Scan.RESULT_ERROR_CORRECTION_LEVEL, ecLevel);
-                    }
-                    @SuppressWarnings("unchecked")
-                    Iterable<byte[]> byteSegments = (Iterable<byte[]>) metadata.get(ResultMetadataType.BYTE_SEGMENTS);
-                    if (byteSegments != null) {
-                        int i = 0;
-                        for (byte[] byteSegment : byteSegments) {
-                            intent.putExtra(Intents.Scan.RESULT_BYTE_SEGMENTS_PREFIX + i, byteSegment);
-                            i++;
+                    Map<ResultMetadataType, ?> metadata = rawResult.getResultMetadata();
+                    if (metadata != null) {
+                        if (metadata.containsKey(ResultMetadataType.UPC_EAN_EXTENSION)) {
+                            intent.putExtra(Intents.Scan.RESULT_UPC_EAN_EXTENSION,
+                                    metadata.get(ResultMetadataType.UPC_EAN_EXTENSION).toString());
+                        }
+                        Number orientation = (Number) metadata.get(ResultMetadataType.ORIENTATION);
+                        if (orientation != null) {
+                            intent.putExtra(Intents.Scan.RESULT_ORIENTATION, orientation.intValue());
+                        }
+                        String ecLevel = (String) metadata.get(ResultMetadataType.ERROR_CORRECTION_LEVEL);
+                        if (ecLevel != null) {
+                            intent.putExtra(Intents.Scan.RESULT_ERROR_CORRECTION_LEVEL, ecLevel);
+                        }
+                        @SuppressWarnings("unchecked")
+                        Iterable<byte[]> byteSegments = (Iterable<byte[]>) metadata.get(ResultMetadataType.BYTE_SEGMENTS);
+                        if (byteSegments != null) {
+                            int i = 0;
+                            for (byte[] byteSegment : byteSegments) {
+                                intent.putExtra(Intents.Scan.RESULT_BYTE_SEGMENTS_PREFIX + i, byteSegment);
+                                i++;
+                            }
                         }
                     }
-                }
-                sendReplyMessage(R.id.return_scan_result, intent, resultDurationMS);
-                break;
+                    sendReplyMessage(R.id.return_scan_result, intent, resultDurationMS);
+                    break;
 
-            case PRODUCT_SEARCH_LINK:
-                // Reformulate the URL which triggered us into a query, so that the request goes to the same
-                // TLD as the scan URL.
-                int end = sourceUrl.lastIndexOf("/scan");
-                String productReplyURL = sourceUrl.substring(0, end) + "?q=" +
-                        resultHandler.getDisplayContents() + "&source=zxing";
-                sendReplyMessage(R.id.launch_product_query, productReplyURL, resultDurationMS);
-                break;
+                case PRODUCT_SEARCH_LINK:
+                    // Reformulate the URL which triggered us into a query, so that the request goes to the same
+                    // TLD as the scan URL.
+                    int end = sourceUrl.lastIndexOf("/scan");
+                    String productReplyURL = sourceUrl.substring(0, end) + "?q=" +
+                            resultHandler.getDisplayContents() + "&source=zxing";
+                    sendReplyMessage(R.id.launch_product_query, productReplyURL, resultDurationMS);
+                    break;
 
-            case ZXING_LINK:
-                if (scanFromWebPageManager != null && scanFromWebPageManager.isScanFromWebPage()) {
-                    String linkReplyURL = scanFromWebPageManager.buildReplyURL(rawResult, resultHandler);
-                    scanFromWebPageManager = null;
-                    sendReplyMessage(R.id.launch_product_query, linkReplyURL, resultDurationMS);
-                }
-                break;
-        }
-    }
-
-    private void maybeSetClipboard(ResultHandler resultHandler) {
-        if (copyToClipboard && !resultHandler.areContentsSecure()) {
-            ClipboardInterface.setText(resultHandler.getDisplayContents(), this);
-        }
-    }
-
-    private void sendReplyMessage(int id, Object arg, long delayMS) {
-        if (handler != null) {
-            Message message = Message.obtain(handler, id, arg);
-            if (delayMS > 0L) {
-                handler.sendMessageDelayed(message, delayMS);
-            } else {
-                handler.sendMessage(message);
+                case ZXING_LINK:
+                    if (scanFromWebPageManager != null && scanFromWebPageManager.isScanFromWebPage()) {
+                        String linkReplyURL = scanFromWebPageManager.buildReplyURL(rawResult, resultHandler);
+                        scanFromWebPageManager = null;
+                        sendReplyMessage(R.id.launch_product_query, linkReplyURL, resultDurationMS);
+                    }
+                    break;
             }
         }
-    }
 
-    private void initCamera(SurfaceHolder surfaceHolder) {
-        if (surfaceHolder == null) {
-            throw new IllegalStateException("No SurfaceHolder provided");
-        }
-        if (cameraManager.isOpen()) {
-            Log.w(TAG, "initCamera() while already open -- late SurfaceView callback?");
-            return;
-        }
-        try {
-            cameraManager.openDriver(surfaceHolder);
-            // Creating the handler starts the preview, which can also throw a RuntimeException.
-            if (handler == null) {
-                handler = new CaptureActivityHandler(this, decodeFormats, decodeHints, characterSet, cameraManager);
+        private void maybeSetClipboard (ResultHandler resultHandler){
+            if (copyToClipboard && !resultHandler.areContentsSecure()) {
+                ClipboardInterface.setText(resultHandler.getDisplayContents(), this);
             }
-            decodeOrStoreSavedBitmap(null, null);
-        } catch (IOException ioe) {
-            Log.w(TAG, ioe);
-            displayFrameworkBugMessageAndExit();
-        } catch (RuntimeException e) {
-            // Barcode Scanner has seen crashes in the wild of this variety:
-            // java.?lang.?RuntimeException: Fail to connect to camera service
-            Log.w(TAG, "Unexpected error initializing camera", e);
-            displayFrameworkBugMessageAndExit();
+        }
+
+        private void sendReplyMessage ( int id, Object arg,long delayMS){
+            if (handler != null) {
+                Message message = Message.obtain(handler, id, arg);
+                if (delayMS > 0L) {
+                    handler.sendMessageDelayed(message, delayMS);
+                } else {
+                    handler.sendMessage(message);
+                }
+            }
+        }
+
+        private void initCamera (SurfaceHolder surfaceHolder){
+            if (surfaceHolder == null) {
+                throw new IllegalStateException("No SurfaceHolder provided");
+            }
+            if (cameraManager.isOpen()) {
+                Log.w(TAG, "initCamera() while already open -- late SurfaceView callback?");
+                return;
+            }
+            try {
+                cameraManager.openDriver(surfaceHolder);
+                // Creating the handler starts the preview, which can also throw a RuntimeException.
+                if (handler == null) {
+                    handler = new CaptureActivityHandler(this, decodeFormats, decodeHints, characterSet, cameraManager);
+                }
+                decodeOrStoreSavedBitmap(null, null);
+            } catch (IOException ioe) {
+                Log.w(TAG, ioe);
+                displayFrameworkBugMessageAndExit();
+            } catch (RuntimeException e) {
+                // Barcode Scanner has seen crashes in the wild of this variety:
+                // java.?lang.?RuntimeException: Fail to connect to camera service
+                Log.w(TAG, "Unexpected error initializing camera", e);
+                displayFrameworkBugMessageAndExit();
+            }
+        }
+
+        private void displayFrameworkBugMessageAndExit () {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle(getString(R.string.app_name));
+            builder.setMessage(getString(R.string.msg_camera_framework_bug));
+            builder.setPositiveButton(R.string.button_ok, new FinishListener(this));
+            builder.setOnCancelListener(new FinishListener(this));
+            builder.show();
+        }
+
+        public void restartPreviewAfterDelay ( long delayMS){
+            if (handler != null) {
+                handler.sendEmptyMessageDelayed(R.id.restart_preview, delayMS);
+            }
+            resetStatusView();
+        }
+
+        private void resetStatusView () {
+            resultView.setVisibility(View.GONE);
+//        statusView.setText(R.string.msg_default_status);
+            //       statusView.setVisibility(View.VISIBLE);
+            viewfinderView.setVisibility(View.VISIBLE);
+            lastResult = null;
+        }
+
+        public void drawViewfinder () {
+            viewfinderView.drawViewfinder();
         }
     }
-
-    private void displayFrameworkBugMessageAndExit() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(getString(R.string.app_name));
-        builder.setMessage(getString(R.string.msg_camera_framework_bug));
-        builder.setPositiveButton(R.string.button_ok, new FinishListener(this));
-        builder.setOnCancelListener(new FinishListener(this));
-        builder.show();
-    }
-
-    public void restartPreviewAfterDelay(long delayMS) {
-        if (handler != null) {
-            handler.sendEmptyMessageDelayed(R.id.restart_preview, delayMS);
-        }
-        resetStatusView();
-    }
-
-    private void resetStatusView() {
-        resultView.setVisibility(View.GONE);
-        statusView.setText(R.string.msg_default_status);
-        statusView.setVisibility(View.VISIBLE);
-        viewfinderView.setVisibility(View.VISIBLE);
-        lastResult = null;
-    }
-
-    public void drawViewfinder() {
-        viewfinderView.drawViewfinder();
-    }
-}

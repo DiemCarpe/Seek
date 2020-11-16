@@ -25,11 +25,12 @@ import com.google.zxing.client.android.camera.CameraManager;
 
 public class MainActivity extends AppCompatActivity {
 
-    private Button urlbutton, Settingbutton, calbutton;
+    private Button urlbutton, Settingbutton, calbutton,scanbutton,button;
     private CameraManager cameraManager;
     private Intent intent, intent1;
     private Menu menu;
     private static final String TAG = "Main页面";
+    private int clickNumber;
     CameraManager getCameraManager() {
         return cameraManager;
     }
@@ -40,10 +41,33 @@ public class MainActivity extends AppCompatActivity {
         Window window = getWindow();
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_main);
+        scanbutton=(Button)findViewById(R.id.scanbutton);
+        scanbutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent =new Intent(MainActivity.this,CaptureActivity.class);
+                startActivity(intent);
+            }
+        });
+        button = (Button)findViewById(R.id.button);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if(clickNumber%2 == 0 ){
+                    Toast.makeText(MainActivity.this, "你真好奇", Toast.LENGTH_SHORT).show();
+
+                }else{
+                    Toast.makeText(MainActivity.this, "你真闲", Toast.LENGTH_SHORT).show();
+                }
+                clickNumber++;
+            }
+        });
         //去寻找是否已经有了相机的权限
         if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
 
-            Toast.makeText(MainActivity.this,"您申请了动态权限",Toast.LENGTH_SHORT).show();
+            //Toast.makeText(MainActivity.this,"您申请了动态权限",Toast.LENGTH_SHORT).show();
+            Log.e(TAG, "onCreate: 已经申请了动态权限" );
             //如果有了相机的权限有调用相机
             Intent intent = new Intent(MainActivity.this, CaptureActivity.class);
             startActivityForResult(intent, 1);
@@ -74,8 +98,8 @@ public class MainActivity extends AppCompatActivity {
                     startActivity(gpurl);
                     Log.e(TAG, "onActivityResult: "+returneData );
                 } else if (resultCode == RESULT_CANCELED) {
-                    Toast.makeText(this, "扫描的二维码有误！", Toast.LENGTH_SHORT).show();
-
+                    //Toast.makeText(this, "扫描的二维码有误！", Toast.LENGTH_SHORT).show();
+                    Log.e(TAG, "onActivityResult: 扫描的二维码有误或者退出扫面页面" );
                 }
                 break;
             case 2:
