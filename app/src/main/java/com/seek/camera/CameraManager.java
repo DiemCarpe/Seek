@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.zxing.client.android.camera;
+package com.seek.camera;
 
 import android.content.Context;
 import android.graphics.Point;
@@ -23,9 +23,13 @@ import android.hardware.Camera;
 import android.os.Handler;
 import android.util.Log;
 import android.view.SurfaceHolder;
+
 import com.google.zxing.PlanarYUVLuminanceSource;
-import com.google.zxing.client.android.camera.open.OpenCamera;
-import com.google.zxing.client.android.camera.open.OpenCameraInterface;
+import com.seek.camera.AutoFocusManager;
+import com.seek.camera.CameraConfigurationManager;
+import com.seek.camera.PreviewCallback;
+import com.seek.camera.open.OpenCamera;
+import com.seek.camera.open.OpenCameraInterface;
 
 import java.io.IOException;
 
@@ -69,7 +73,7 @@ public final class CameraManager {
     this.configManager = new CameraConfigurationManager(context);
     previewCallback = new PreviewCallback(configManager);
   }
-  
+
   /**
    * Opens the camera driver and initializes the hardware parameters.
    *
@@ -131,11 +135,6 @@ public final class CameraManager {
    */
   public synchronized void closeDriver() {
     if (camera != null) {
-      //相机释放之前，先停止预览
-      camera.getCamera().setPreviewCallback(null);
-      camera.getCamera().lock();
-      stopPreview();
-
       camera.getCamera().release();
       camera = null;
       // Make sure to clear these each time we close the camera, so that any scanning rect
@@ -237,7 +236,7 @@ public final class CameraManager {
     }
     return framingRect;
   }
-  
+
   private static int findDesiredDimensionInRange(int resolution, int hardMin, int hardMax) {
     int dim = 5 * resolution / 8; // Target 5/8 of each dimension
     if (dim < hardMin) {
@@ -286,7 +285,7 @@ public final class CameraManager {
     return framingRectInPreview;
   }
 
-  
+
   /**
    * Allows third party apps to specify the camera ID, rather than determine
    * it automatically based on available cameras and their orientation.
@@ -296,7 +295,7 @@ public final class CameraManager {
   public synchronized void setManualCameraId(int cameraId) {
     requestedCameraId = cameraId;
   }
-  
+
   /**
    * Allows third party apps to specify the scanning rectangle dimensions, rather than determine
    * them automatically based on screen resolution.

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.zxing.client.android;
+package com.seek;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -29,6 +29,8 @@ import com.google.zxing.MultiFormatReader;
 import com.google.zxing.PlanarYUVLuminanceSource;
 import com.google.zxing.ReaderException;
 import com.google.zxing.Result;
+import com.seek.MainActivity;
+import com.seek.DecodeThread;
 import com.google.zxing.common.HybridBinarizer;
 
 import java.io.ByteArrayOutputStream;
@@ -39,11 +41,11 @@ final class DecodeHandler extends Handler {
 
     private static final String TAG = DecodeHandler.class.getSimpleName();
 
-    private final CaptureActivity activity;
+    private final MainActivity activity;
     private final MultiFormatReader multiFormatReader;
     private boolean running = true;
 
-    DecodeHandler(CaptureActivity activity, Map<DecodeHintType, Object> hints) {
+    DecodeHandler(MainActivity activity, Map<DecodeHintType, Object> hints) {
         multiFormatReader = new MultiFormatReader();
         multiFormatReader.setHints(hints);
         this.activity = activity;
@@ -55,9 +57,9 @@ final class DecodeHandler extends Handler {
             return;
         }
         //linhaitao
-        if (message.what == R.id.decode) {
+        if (message.what == com.google.zxing.client.android.R.id.decode) {
             decode((byte[]) message.obj, message.arg1, message.arg2);
-        } else if (message.what == R.id.quit) {
+        } else if (message.what == com.google.zxing.client.android.R.id.quit) {
             running = false;
             Looper.myLooper().quit();
         }
@@ -102,7 +104,7 @@ final class DecodeHandler extends Handler {
             long end = System.nanoTime();
             Log.d(TAG, "Found barcode in " + TimeUnit.NANOSECONDS.toMillis(end - start) + " ms");
             if (handler != null) {
-                Message message = Message.obtain(handler, R.id.decode_succeeded, rawResult);
+                Message message = Message.obtain(handler, com.google.zxing.client.android.R.id.decode_succeeded, rawResult);
                 Bundle bundle = new Bundle();
                 bundleThumbnail(source, bundle);
                 message.setData(bundle);
@@ -110,7 +112,7 @@ final class DecodeHandler extends Handler {
             }
         } else {
             if (handler != null) {
-                Message message = Message.obtain(handler, R.id.decode_failed);
+                Message message = Message.obtain(handler, com.google.zxing.client.android.R.id.decode_failed);
                 message.sendToTarget();
             }
         }

@@ -82,7 +82,6 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
     private static final long DEFAULT_INTENT_RESULT_DURATION_MS = 0L;//原1500L
     private static final long BULK_MODE_SCAN_DELAY_MS = 1000L;
 
-    private static final String[] ZXING_URLS = {"http://zxing.appspot.com/scan", "zxing://scan/"};
 
     private static final int HISTORY_REQUEST_CODE = 0x0000bacc;
 
@@ -138,7 +137,6 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
         beepManager = new BeepManager(this);
         ambientLightManager = new AmbientLightManager(this);
 
-        PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
     }
 
     @Override
@@ -229,18 +227,6 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
                 sourceUrl = dataString;
                 decodeFormats = DecodeFormatManager.PRODUCT_FORMATS;
 
-            } else if (isZXingURL(dataString)) {
-
-                // Scan formats requested in query string (all formats if none specified).
-                // If a return URL is specified, send the results there. Otherwise, handle it ourselves.
-                source = IntentSource.ZXING_LINK;
-                sourceUrl = dataString;
-                Uri inputUri = Uri.parse(dataString);
-                scanFromWebPageManager = new ScanFromWebPageManager(inputUri);
-                decodeFormats = DecodeFormatManager.parseDecodeFormats(inputUri);
-                // Allow a sub-set of the hints to be specified by the caller.
-                decodeHints = DecodeHintManager.parseDecodeHints(inputUri);
-
             }
 
             characterSet = intent.getStringExtra(Intents.Scan.CHARACTER_SET);
@@ -280,17 +266,6 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
         }
     }
 
-    private static boolean isZXingURL(String dataString) {
-        if (dataString == null) {
-            return false;
-        }
-        for (String url : ZXING_URLS) {
-            if (dataString.startsWith(url)) {
-                return true;
-            }
-        }
-        return false;
-    }
 
     @Override
     protected void onPause() {
@@ -345,14 +320,15 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
         return super.onKeyDown(keyCode, event);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater menuInflater = getMenuInflater();
-        menuInflater.inflate(R.menu.capture, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-//        @Override
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+////        MenuInflater menuInflater = getMenuInflater();
+//        getMenuInflater().inflate(R.menu.main, menu);
+////        return super.onCreateOptionsMenu(menu);
+//        return true;
+//    }
+//
+//    @Override
 //    public boolean onOptionsItemSelected(MenuItem item) {
 //        switch (item.getItemId()){
 //            case R.id.menu_settings:
@@ -544,9 +520,6 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
                 return;
             }
 
-//    statusView.setVisibility(View.GONE);
-//    viewfinderView.setVisibility(View.GONE);
-//    resultView.setVisibility(View.VISIBLE);
 
             ImageView barcodeImageView = (ImageView) findViewById(R.id.barcode_image_view);
             if (barcode == null) {

@@ -1,29 +1,44 @@
 package com.seek;
 
 import android.Manifest;
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.SurfaceHolder;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
-
+import android.view.Surface;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.google.zxing.Result;
 import com.google.zxing.client.android.CaptureActivity;
+import com.google.zxing.client.android.CaptureActivityHandler;
+import com.google.zxing.client.android.FinishListener;
 import com.google.zxing.client.android.camera.CameraManager;
+import com.seek.camera.open.CameraFacing;
 
-public class MainActivity extends AppCompatActivity {
+import java.io.IOException;
+
+//public class MainActivity extends  AppCompatActivity {
+public final class MainActivity extends Activity implements SurfaceHolder.Callback {
 
     private Button urlbutton, Settingbutton, calbutton,scanbutton,button;
     private CameraManager cameraManager;
@@ -31,8 +46,41 @@ public class MainActivity extends AppCompatActivity {
     private Menu menu;
     private static final String TAG = "Main页面";
     private int clickNumber;
+    private InactivityTimer inactivityTimer;
+    private CameraFacing direction=CameraFacing.BACK; //默认调用后置摄像头
+    private ImageView switchCamera;
+    private CaptureActivityHandler handler;
+
+    public Handler getHandler() {
+        return handler;
+    }
+    public MainActivity() {
+    }
+
     CameraManager getCameraManager() {
         return cameraManager;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        switchCamera=(ImageView)findViewById(R.id.switch_camera);
+
+
+        switchCamera.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.e(TAG, "onClick: 切换相机" );
+                //不是前置摄像头就切为后置
+                if(direction.equals(CameraFacing.FRONT)){
+                    direction = CameraFacing.BACK;
+                }else{
+                    //切换为前置摄像头
+                    direction = CameraFacing.FRONT;
+                }
+                initCamera(direction);
+            }
+        });
     }
 
     @Override
@@ -40,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         Window window = getWindow();
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.capture);
         scanbutton=(Button)findViewById(R.id.scanbutton);
         scanbutton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -201,8 +249,73 @@ public class MainActivity extends AppCompatActivity {
         }
         return true;
     }
+    //处理扫描后的结果,把扫描后的结果通过浏览器打开
+    public void handleDecode(Result rawResult, Bitmap barcode, float scaleFactor){
+        inactivityTimer.onActivity();
+        String result = rawResult.getText();
+        if (result.equals("")){
+            Toast.makeText(MainActivity.this, "Scan Failed!", Toast.LENGTH_SHORT).show();
+        }else{
+            Log.e(TAG, "handleDecode: "+result);
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setData(Uri.parse(result));
+            startActivity(intent);
+        }
+    }
+    private void displayFrameworkBugMessageAndExit () {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(getString(com.google.zxing.client.android.R.string.app_name));
+        builder.setMessage(getString(com.google.zxing.client.android.R.string.msg_camera_framework_bug));
+        builder.setPositiveButton(com.google.zxing.client.android.R.string.button_ok, new FinishListener(this));
+        builder.setOnCancelListener(new FinishListener(this));
+        builder.show();
+    }
+    private void initCamera (SurfaceHolder surfaceHolder){
+        if (surfaceHolder == null) {
+            throw new IllegalStateException("No SurfaceHolder provided");
+        }
+        if (cameraManager.isOpen()) {
+            Log.w(TAG, "initCamera() while already open -- late SurfaceView callback?");
 
 
+            //如果已经打开则关闭当前摄像头然后再打开一个其他的
+            handler = null ;
+            cameraManager.closeDriver();
+//            return;
+        }
+        try {
+            cameraManager.openDriver(surfaceHolder);
+            // Creating the handler starts the preview, which can also throw a RuntimeException.
+            if (handler == null) {
+                handler = new CaptureActivityHandler(this, decodeFormats, decodeHints, characterSet, cameraManager);
+            }
+//            decodeOrStoreSavedBitmap(null, null);
+        } catch (IOException ioe) {
+            Log.w(TAG, ioe);
+            displayFrameworkBugMessageAndExit();
+        } catch (RuntimeException e) {
+            // Barcode Scanner has seen crashes in the wild of this variety:
+            // java.?lang.?RuntimeException: Fail to connect to camera service
+            Log.w(TAG, "Unexpected error initializing camera", e);
+            displayFrameworkBugMessageAndExit();
+        }
+    }
+
+
+    @Override
+    public void surfaceCreated(@NonNull SurfaceHolder surfaceHolder) {
+
+    }
+
+    @Override
+    public void surfaceChanged(@NonNull SurfaceHolder surfaceHolder, int i, int i1, int i2) {
+
+    }
+
+    @Override
+    public void surfaceDestroyed(@NonNull SurfaceHolder surfaceHolder) {
+
+    }
 }
 
 //    @Override

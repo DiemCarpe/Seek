@@ -33,8 +33,10 @@ int id history_title 0x0
 int id image_view 0x0
 int id launch_product_query 0x0
 int id menu_encode 0x0
+int id menu_help 0x0
 int id menu_history_clear_text 0x0
 int id menu_history_send 0x0
+int id menu_settings 0x0
 int id menu_share 0x0
 int id meta_text_view 0x0
 int id meta_text_view_label 0x0
