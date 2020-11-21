@@ -10,6 +10,8 @@ xmlns:android="http://schemas.android.com/apk/res/android">
         android:id="@+id/url_item"/>
     <item android:title="电话"
         android:id="@+id/cal_item"/>
-    <item android:title="关于"
-        android:id="@+id/about_item"/>
+    <item android:title="AlertDialog"
+        android:id="@+id/AlertDialog_item"/>
+    <item android:title="ProgressDialog"
+        android:id="@+id/ProgressDialog_item"/>
 </menu>

@@ -26,11 +26,11 @@ import android.view.Display;
 import android.view.Surface;
 import android.view.WindowManager;
 
-import com.google.zxing.client.android.PreferencesActivity;
-import com.google.zxing.client.android.camera.FrontLightMode;
-import com.google.zxing.client.android.camera.open.CameraFacing;
-import com.google.zxing.client.android.camera.open.OpenCamera;
-import com.google.zxing.client.android.core.CameraConfigurationUtils;
+//import com.google.zxing.client.android.PreferencesActivity;
+//import com.google.zxing.client.android.camera.FrontLightMode;
+import com.seek.camera.open.CameraFacing;
+import com.seek.camera.open.OpenCamera;
+import com.seek.camera.CameraConfigurationUtils;
 
 /**
  * A class which deals with reading, parsing, and setting the camera parameters which are used to
@@ -156,36 +156,36 @@ final class CameraConfigurationManager {
       Log.w(TAG, "In camera config safe mode -- most settings will not be honored");
     }
 
-    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-
-    initializeTorch(parameters, prefs, safeMode);
-
-    CameraConfigurationUtils.setFocus(
-        parameters,
-        prefs.getBoolean(PreferencesActivity.KEY_AUTO_FOCUS, true),
-        prefs.getBoolean(PreferencesActivity.KEY_DISABLE_CONTINUOUS_FOCUS, true),
-        safeMode);
-
-    if (!safeMode) {
-      if (prefs.getBoolean(PreferencesActivity.KEY_INVERT_SCAN, false)) {
-        CameraConfigurationUtils.setInvertColor(parameters);
-      }
-
-      if (!prefs.getBoolean(PreferencesActivity.KEY_DISABLE_BARCODE_SCENE_MODE, true)) {
-        CameraConfigurationUtils.setBarcodeSceneMode(parameters);
-      }
-
-      if (!prefs.getBoolean(PreferencesActivity.KEY_DISABLE_METERING, true)) {
-        CameraConfigurationUtils.setVideoStabilization(parameters);
-        CameraConfigurationUtils.setFocusArea(parameters);
-        CameraConfigurationUtils.setMetering(parameters);
-      }
-
-      //SetRecordingHint to true also a workaround for low framerate on Nexus 4
-      //https://stackoverflow.com/questions/14131900/extreme-camera-lag-on-nexus-4
-      parameters.setRecordingHint(true);
-
-    }
+//    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+//
+//    initializeTorch(parameters, prefs, safeMode);
+//
+//    CameraConfigurationUtils.setFocus(
+//        parameters,
+//        prefs.getBoolean(PreferencesActivity.KEY_AUTO_FOCUS, true),
+//        prefs.getBoolean(PreferencesActivity.KEY_DISABLE_CONTINUOUS_FOCUS, true),
+//        safeMode);
+//
+//    if (!safeMode) {
+//      if (prefs.getBoolean(PreferencesActivity.KEY_INVERT_SCAN, false)) {
+//        CameraConfigurationUtils.setInvertColor(parameters);
+//      }
+//
+//      if (!prefs.getBoolean(PreferencesActivity.KEY_DISABLE_BARCODE_SCENE_MODE, true)) {
+//        CameraConfigurationUtils.setBarcodeSceneMode(parameters);
+//      }
+//
+//      if (!prefs.getBoolean(PreferencesActivity.KEY_DISABLE_METERING, true)) {
+//        CameraConfigurationUtils.setVideoStabilization(parameters);
+//        CameraConfigurationUtils.setFocusArea(parameters);
+//        CameraConfigurationUtils.setMetering(parameters);
+//      }
+//
+//      //SetRecordingHint to true also a workaround for low framerate on Nexus 4
+//      //https://stackoverflow.com/questions/14131900/extreme-camera-lag-on-nexus-4
+//      parameters.setRecordingHint(true);
+//
+//    }
 
     parameters.setPreviewSize(bestPreviewSize.x, bestPreviewSize.y);
 
@@ -242,17 +242,17 @@ final class CameraConfigurationManager {
     camera.setParameters(parameters);
   }
 
-  private void initializeTorch(Camera.Parameters parameters, SharedPreferences prefs, boolean safeMode) {
-    boolean currentSetting = FrontLightMode.readPref(prefs) == FrontLightMode.ON;
-    doSetTorch(parameters, currentSetting, safeMode);
-  }
+//  private void initializeTorch(Camera.Parameters parameters, SharedPreferences prefs, boolean safeMode) {
+//    boolean currentSetting = FrontLightMode.readPref(prefs) == FrontLightMode.ON;
+//    doSetTorch(parameters, currentSetting, safeMode);
+//  }
 
   private void doSetTorch(Camera.Parameters parameters, boolean newSetting, boolean safeMode) {
     CameraConfigurationUtils.setTorch(parameters, newSetting);
     SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-    if (!safeMode && !prefs.getBoolean(PreferencesActivity.KEY_DISABLE_EXPOSURE, true)) {
-      CameraConfigurationUtils.setBestExposure(parameters, newSetting);
-    }
+//    if (!safeMode && !prefs.getBoolean(PreferencesActivity.KEY_DISABLE_EXPOSURE, true)) {
+//      CameraConfigurationUtils.setBestExposure(parameters, newSetting);
+//    }
   }
 
 }

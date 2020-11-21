@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#c099cc00</color>
-    <color name="colorPrimaryDark">#c099cc00</color>
-    <color name="colorAccent">#c099cc00</color>
-    <color name="white">#ffffff</color>
+    <color name="colorPrimary">#ff88ff</color>
+    <color name="colorPrimaryDark">#ff88ff</color>
+    <color name="colorAccent">#ff88ff</color>
+    <color name="white">#ff88ff</color>
+    <color name="viewfinder_laser">#ffff0000</color>
+    <color name="viewfinder_mask">#60000000</color>
+    <color name="possible_result_points">#00000000</color>
+
+    <color name="result_view">#F8B060</color>
+    <color name="status_text">#ff88ff</color>
 </resources>

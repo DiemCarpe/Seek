@@ -19,6 +19,8 @@
     <string name="signature_title">Your signature</string>
     <string name="reply_title">Default reply action</string>
     <string name="scan">扫一扫</string>
+    <string name="msg_camera_framework_bug">扫描出错</string>
+    <string name="button_ok">扫描成功</string>
 
     <!-- Sync Preferences -->
     <string name="sync_title">Sync email periodically</string>
