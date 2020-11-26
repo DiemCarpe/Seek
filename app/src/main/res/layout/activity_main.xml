@@ -63,14 +63,20 @@
 <!--        tools:ignore="ContentDescription"-->
 <!--        />-->
 <!--</merge>-->
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.percentlayout.widget.PercentFrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
+<!--    <include layout="@layout/title"/>-->
+<!--    自定义布局2-->
 
-
+    <com.seek.TitleLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        />
 
 
     <LinearLayout
@@ -174,4 +180,4 @@
 
     </LinearLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.percentlayout.widget.PercentFrameLayout>

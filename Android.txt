@@ -1,0 +1,111 @@
+logt 快速出现TAG
+ctrl+o  重写方法
+
+
+
+活动的启动模式:
+	AndroidManifest内对应Activity的android:launchMode="XXX"
+	1.standard
+		活动默认的启动模式，每次都会创建不会在乎栈内此活动是否已经在返回栈中存在
+	2.singleTop
+		不论点击多少次按钮，都不会重新在启动Activity，因为Activity已经处于返回栈的栈顶，每当想要在启动一个Activity时都会直接使用栈顶的活动，因此Activity只会有一个实例，如果Activity未处于栈顶，这时候在启动Activity还是会创建新的实例  (解决重复创建栈顶)
+	3.singleTask
+		每次启动该活动时，系统首先会在返回栈中检查是否存在该栈的实例，如果发现已经存在则直接使用该实例
+	4.singleInstance
+		启动一个新的返回栈
+
+知道现在处在哪个活动：
+	创建一个基类打印getClass().getSimpleName()，让所有Activity继承这个基类，运行到哪个Activity时会打印当前Activity
+随时随地退出程序：
+	创建一个活动管理器，对所有活动进行管理，在基类内使用添加删除方法，想从什么地方直接退出，就直接调用finishall()方法
+启动活动的最佳写法：
+	创建一个actionStart类，将所有Intent的数据都由actionStart传递
+点击事件的监听：
+	实现接口的方法：
+		1.public class SettingsActivity extends BaseActivity implements View.OnClickListener 
+		2.绑定点击事件
+        Button button2=(Button)findViewById(R.id.button2);
+        button2.setOnClickListener(this);
+        3.添加click类
+        public void onClick(View view) {
+            switch (view.getId()) {
+            	case R.id.button2:
+	            	//逻辑
+	            	break;
+	            default:break;
+	        }
+    	}
+常用控件:
+	TextView
+	Button
+	EditText
+	ImageView：
+		setImageResource重新设置图片
+	ProgressBar：
+		getVisibility()获取Visibility状态
+		setVisibility()设置Visibility状态
+	AlertDialog:
+		
+常用控件的使用方法：
+		android:id="@+id/app_name"
+		//宽度
+        android:layout_width="wrap_content"
+        //高度
+        android:layout_height="54dp"
+        可选值有三种 
+        wrap_content 让当前的控件大小刚好能包含住里面的内容
+        match_parent 让当前控件的大小与父布局的大小一样
+        fill_parent  与match_parent类似，推荐match_parent
+        //文字对齐方式
+        android:gravity="center"
+        可选值有：top bottom left right center等，可以用|来同时指定多个值
+        //指定文字的大小
+        android:textSize="30dp"
+        //指定文字的颜色
+        android:textColor="@color/status_text"
+        //权重
+        android:layout_weight="1"
+        //禁用大小写切换 
+        android:textAllCaps="false"
+        //输入框提示字符
+        android:hint="请输入"
+        //输入内容超过2行，文本自动向上滚动
+        android:maxLines="2"
+        //图片路径
+        app:srcCompat="@drawable/ic_seek"
+        //可见属性
+        android:visibility="visible"
+        可选值：
+        visible    可见
+        invisible  不可见但占据位置与大小
+        gone       不可见且不占用屏幕位置
+        使用setVisibiliy()方法设置可见性
+
+布局方式：
+    百分比布局：
+        //引入
+        implementation 'androidx.percentlayout:percentlayout:1.0.0'
+
+自定义控件：
+    1.引入布局：
+    //新建title.xml,在activity_main.xml中引入
+    <include layout="@layout/title"/>
+    在activity中隐藏标题栏
+    actionBar = getSupportActionBar();
+        if(actionBar != null){
+            actionBar.hide();
+            }
+    2.创建自定义控件
+    创建一个自定义类继承LinearLayout，重写LinearLayout中带有两个参数的构造函数，在构造函数中借助LayoutInflater对标题栏布局进行动态加载
+    通过LayoutInflater的from方法可以构建出一个LayoutInflater对象，然后调用inflate方法就可以动态加载一个布局文件 inflate方法接收两个参数
+    第一个参数就是要加载的布局文件id，第二个参数就是给加载好的布局在添加一个父布局，这里我们想要指定为TitleLayout 于是直接传入this
+        public TitleLayout(Context context, AttributeSet attres) {
+            super(context, attres);
+            LayoutInflater.from(context).inflate(R.layout.title, this);
+    然后再xml中添加自定义控件
+        <com.seek.TitleLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            />
+    为自定义控件中的元素添加点击事件
+ListView：

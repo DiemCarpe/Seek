@@ -1,8 +1,10 @@
 package com.seek;
 
 import android.Manifest;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Notification;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -64,7 +66,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private String data1 = "第二个从第一个首页来的！";
     private EditText editText;
     private ProgressBar progressBar;
-
     public Handler getHandler() {
         return handler;
     }
@@ -89,6 +90,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         super.onCreate(savedInstanceState);
         Log.e(TAG, "MainActivity onCreate: Task is: " + getTaskId());
         setContentView(R.layout.activity_main);
+        androidx.appcompat.app.ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null){
+            actionBar.hide();
+        }
         //扫一扫
         scanbutton = (Button) findViewById(R.id.scanbutton);
         scanbutton.setOnClickListener(this);
@@ -115,7 +120,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.scanbutton:
-                Intent intent = new Intent(MainActivity.this, DialogAcitvity.class);
+//                Intent intent = new Intent(MainActivity.this, DialogAcitvity.class);
+                Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
                 startActivity(intent);
                 break;
             case R.id.button:
@@ -142,6 +148,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 progressBar.setProgress(progress);
 
                 clickNumber++;
+                Intent intent1 = new Intent(MainActivity.this, ThirdActivity.class);
+                startActivity(intent1);
+
                 break;
             case R.id.submit:
                 String inputText = editText.getText().toString();
@@ -338,6 +347,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 ProgressDialog progreesDialog= new ProgressDialog(MainActivity.this);
                 progreesDialog.setTitle("This is ProgressDialog");
                 progreesDialog.setMessage("Loading. . . . .");
+                //数据加载完成后必须调用progreesDialog.dismiss()方法来关闭对话框
                 progreesDialog.setCancelable(true);
                 //调用show显示对话框
                 progreesDialog.show();

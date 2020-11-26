@@ -20,6 +20,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
     private TextView textView;
     private Button button2;
     private static final String TAG = "设置页面";
+    private ActionBar actionBar;
 
 
     @Override
@@ -35,6 +36,10 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         super.onCreate(savedInstanceState);
         Log.e(TAG, "SettingsActivity onCreate: Task is " + getTaskId());
         setContentView(R.layout.settings_activity);
+        actionBar = getSupportActionBar();
+        if(actionBar != null){
+            actionBar.hide();
+        }
         if (savedInstanceState != null) {
             String tempData = savedInstanceState.getString("set");
             Log.e(TAG, "Main传递的临时数据为: " + tempData);
