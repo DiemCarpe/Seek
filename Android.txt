@@ -109,3 +109,56 @@ ctrl+o  重写方法
             />
     为自定义控件中的元素添加点击事件
 ListView：
+    在xml中加入ListView控件
+    <ListView
+        android:id="@+id/list_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    在activity中加入数据
+        private String[] data={"Name","Aara", "Age", "Class", "First","Close","Grape",
+        "Mnago","Orange","Banana","Pear","Cherry", "Class", "First","Close","Grape",
+                "Mnago","Orange","Banana","Pear","Cherry"
+        };
+        //借助适配器ArrayAdapter来完成 指定泛型为String，在ArrayAdapter构造的函数中需要
+        传入当前的上下文，已经布局的id 和数据
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+           ThirdActivity.this,android.R.layout.simple_list_item_1,data
+            );
+        //调用ListView 的setAdapter方法将构建好的适配器传递进去
+        ListView listView = (ListView)findViewById(R.id.list_view);
+        listView.setAdapter(adapter);
+
+
+定制ListView：
+    新建类Fruit 作为ListView的适配器的适配类型
+    public class Fruit {
+        private String name;
+        private int imageId;
+        public Fruit(String name,int imageId){
+            this.name=name;
+            this.imageId=imageId;
+        }
+
+        public String getName(){
+            return name;
+        }
+        public int getImageId(){
+            return imageId;
+        }
+    }
+    为ListView的子项指定一个我们自定义的布局 新建xml
+
+
+
+
+
+
+
+
+
+
+
+
+
+

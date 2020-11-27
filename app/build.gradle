@@ -29,10 +29,10 @@ dependencies {
     implementation 'com.google.android.material:material:1.2.1'
     implementation 'androidx.navigation:navigation-fragment:2.3.1'
     implementation 'androidx.navigation:navigation-ui:2.3.1'
-    implementation 'androidx.preference:preference:1.1.0'
+    implementation 'androidx.preference:preference:1.1.1'
     //引入百分比布局
     implementation 'androidx.percentlayout:percentlayout:1.0.0'
-    implementation 'androidx.appcompat:appcompat:1.0.0'
+    implementation 'androidx.recyclerview:recyclerview:1.1.0'
     //引入基类
     implementation files('libs/core-3.4.0.jar')
     testImplementation 'junit:junit:4.12'

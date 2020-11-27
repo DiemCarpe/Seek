@@ -6,9 +6,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,22 +50,29 @@ public class ThirdActivity extends BaseActivity {
 //        );
         ListView listView = (ListView)findViewById(R.id.list_view);
         listView.setAdapter(adapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Fruit fruit=fruitList.get(i);
+                Toast.makeText(ThirdActivity.this, fruit.getName(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
     private void  initFruits(){
         for (int i=0;i<2;i++){
             Fruit apple = new Fruit("Apple",R.drawable.ic_seek);
             fruitList.add(apple);
-            Fruit apple1 = new Fruit("Apple",R.drawable.ic_seek);
+            Fruit apple1 = new Fruit("Apple2",R.drawable.ic_seek);
             fruitList.add(apple1);
-            Fruit apple2 = new Fruit("Apple",R.drawable.ic_seek);
+            Fruit apple2 = new Fruit("Apple3",R.drawable.ic_seek);
             fruitList.add(apple2);
-            Fruit apple3 = new Fruit("Apple",R.drawable.ic_seek);
+            Fruit apple3 = new Fruit("Apple4",R.drawable.ic_seek);
             fruitList.add(apple3);
-            Fruit apple4 = new Fruit("Apple",R.drawable.ic_seek);
+            Fruit apple4 = new Fruit("Apple15",R.drawable.ic_seek);
             fruitList.add(apple4);
-            Fruit apple5 = new Fruit("Apple",R.drawable.ic_seek);
+            Fruit apple5 = new Fruit("Apple6",R.drawable.ic_seek);
             fruitList.add(apple5);
-            Fruit apple6 = new Fruit("Apple",R.drawable.ic_seek);
+            Fruit apple6 = new Fruit("Apple7",R.drawable.ic_seek);
             fruitList.add(apple6);
             Fruit apple7 = new Fruit("Apple",R.drawable.ic_seek);
             fruitList.add(apple7);
