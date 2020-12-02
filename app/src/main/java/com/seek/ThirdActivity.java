@@ -3,6 +3,7 @@ package com.seek;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -36,6 +37,16 @@ public class ThirdActivity extends BaseActivity {
         if(actionBar!=null){
             actionBar.hide();
         }
+        Button button1 = (Button)findViewById(R.id.button2);
+        button1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(ThirdActivity.this,Icon.class);
+                startActivity(intent);
+            }
+        });
+
+
         Button button = (Button)findViewById(R.id.button);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -44,12 +55,12 @@ public class ThirdActivity extends BaseActivity {
             }
         });
         initFruits();
-        FruitAdapter adapter = new FruitAdapter(ThirdActivity.this,R.layout.fruit_item,fruitList);
+        //FruitAdapter adapter1 = new FruitAdapter(ThirdActivity.this,R.layout.fruit_item,fruitList);
 //        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
 //                ThirdActivity.this,android.R.layout.simple_list_item_1,data
 //        );
         ListView listView = (ListView)findViewById(R.id.list_view);
-        listView.setAdapter(adapter);
+        //listView.setAdapter(adapter1);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {

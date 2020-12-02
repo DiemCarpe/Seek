@@ -36,7 +36,9 @@ public class TitleLayout extends LinearLayout {
             }
         });
 
+
     }
+
 }
 //    @Override
 //    public void onClick(View view) {

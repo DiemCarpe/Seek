@@ -16,6 +16,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.SurfaceHolder;
 import android.view.View;
@@ -23,7 +24,9 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 import android.view.Surface;
@@ -47,7 +50,7 @@ import com.seek.BaseActivity;
 
 import java.io.IOException;
 
-public class MainActivity extends BaseActivity implements View.OnClickListener {
+public class MainActivity extends BaseActivity implements View.OnClickListener, PopupMenu.OnMenuItemClickListener {
 //public final class MainActivity extends Activity implements SurfaceHolder.Callback {
 
     private Button urlbutton, Settingbutton, calbutton, scanbutton, button, submit;
@@ -58,7 +61,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private int clickNumber;
     private InactivityTimer inactivityTimer;
     private CameraFacing direction = CameraFacing.BACK; //默认调用后置摄像头
-    private ImageView switchCamera, icon;
+    private ImageView switchCamera, icon,mainMenu;
     private MainActivityHandler handler;
     private SurfaceView surfaceView;
     private ViewfinderView viewfinderView;
@@ -107,6 +110,25 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         submit.setOnClickListener(this);
         icon = (ImageView) findViewById(R.id.icon);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
+
+        //PopupMenu点击与应用  因为PopupMenu没有在activity_main 布局内所以单独写了一个点击事件
+        mainMenu = (ImageView) findViewById(R.id.main_menu);
+        mainMenu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //通过PopupMenu的构造函数实例化一个PopupMenu对象，传递一个当前上下文对象以及绑定的View
+                PopupMenu popupMenu = new PopupMenu(MainActivity.this,view);
+                //获取菜单填充器
+                MenuInflater inflater = popupMenu.getMenuInflater();
+                //使用MenuInflater.inflate()方法加载menu的XML文件到PopupMenu.getMenu()中
+                inflater.inflate(R.menu.main,popupMenu.getMenu());
+                //绑定菜单的点击事件
+                popupMenu.setOnMenuItemClickListener(MainActivity.this);
+                //显示
+                popupMenu.show();
+                Log.e(TAG, "onClick: popupMenu");
+            }
+        });
         //取出临时保存的数据 2
         if (savedInstanceState != null) {
             String tempData = savedInstanceState.getString("data_key");
@@ -118,7 +140,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     @Override
     public void onClick(View view) {
+
         switch (view.getId()) {
+
             case R.id.scanbutton:
 //                Intent intent = new Intent(MainActivity.this, DialogAcitvity.class);
                 Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
@@ -159,6 +183,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             default:
         }
     }
+
 
     @Override
     protected void onStart() {
@@ -272,13 +297,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     }
 
-    //重写onCreateOptionsMenu事件
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-        //return super.onCreateOptionsMenu(menu);
-    }
 
     //完成Intent的构建 并且所有SettingsActivity的数据都由actionStart传递
     public static void actionStart(Context context, String data, String data1) {
@@ -288,33 +306,38 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         context.startActivity(intent);
     }
 
-    //menu点击事件
+
+
+    //PopupMenu点击事件
     @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+    public boolean onMenuItemClick(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             //回调1
             case R.id.setting_item:
                 Intent hdintent = new Intent(MainActivity.this, SettingsActivity.class);
                 startActivityForResult(hdintent, 2);
-                Toast.makeText(this, "回调设置", Toast.LENGTH_SHORT).show();
+                Log.e(TAG, "onMenuItemClick: 回调设置");
                 break;
             //传参1
             case R.id.ccsetting_item:
                 //调用方法传递
                 actionStart(MainActivity.this, data, data1);
-                Toast.makeText(this, "传参设置", Toast.LENGTH_SHORT).show();
+                Log.e(TAG, "onMenuItemClick: 传参设置");
+
                 break;
             case R.id.url_item:
                 Intent urlintent = new Intent(Intent.ACTION_VIEW);
                 urlintent.setData(Uri.parse("http://www.baidu.com"));
                 startActivity(urlintent);
-                Toast.makeText(this, "链接", Toast.LENGTH_SHORT).show();
+                Log.e(TAG, "onMenuItemClick: 链接");
+
                 break;
             case R.id.cal_item:
                 Intent calintent = new Intent(Intent.ACTION_DIAL);
                 calintent.setData(Uri.parse("tel:10086"));
                 startActivity(calintent);
-                Toast.makeText(this, "电话", Toast.LENGTH_SHORT).show();
+                Log.e(TAG, "onMenuItemClick: 电话");
+
                 break;
                 //AlertDialog对话框
             case R.id.AlertDialog_item:
@@ -376,7 +399,24 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
 
     }
+
 }
+
+
+//menu
+//    //重写onCreateOptionsMenu事件
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        getMenuInflater().inflate(R.menu.main, menu);
+//        return true;
+//        //return super.onCreateOptionsMenu(menu);
+//    }
+//    @Override
+//    public boolean onPrepareOptionsMenu(Menu menu) {
+//        return super.onPrepareOptionsMenu(menu);
+//    }
+
+
 //    private void displayFrameworkBugMessageAndExit () {
 //        AlertDialog.Builder builder = new AlertDialog.Builder(this);
 //        builder.setTitle(getString(com.google.zxing.client.android.R.string.app_name));

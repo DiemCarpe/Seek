@@ -1,6 +1,18 @@
 logt 快速出现TAG
 ctrl+o  重写方法
-
+PopupMenu：
+    1.新建点击事件
+    2.通过PopupMenu的构造函数实例化一个PopupMenu对象，传递一个当前上下文对象以及绑定的View
+    3.获取菜单填充器
+        MenuInflater inflater = popupMenu.getMenuInflater();
+    4.使用MenuInflater.inflate()方法加载menu的XML文件到PopupMenu.getMenu()中
+    5.绑定菜单的点击事件
+        继承PopupMenu.OnMenuItemClickListener
+            @Override
+            public boolean onMenuItemClick(@NonNull MenuItem item) {
+                switch (item.getItemId()) {}
+        加载各种点击事件
+    6.显示
 
 
 活动的启动模式:
