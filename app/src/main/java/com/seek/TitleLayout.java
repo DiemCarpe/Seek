@@ -3,6 +3,7 @@ package com.seek;
 import android.app.Activity;
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -15,7 +16,7 @@ import java.util.jar.Attributes;
 public class TitleLayout extends LinearLayout {
     private Button titleBack, titleEdit;
     private TextView title_text;
-
+    private static final String TAG = "TitleLayout";
     public TitleLayout(Context context, AttributeSet attres) {
         super(context, attres);
         LayoutInflater.from(context).inflate(R.layout.title, this);

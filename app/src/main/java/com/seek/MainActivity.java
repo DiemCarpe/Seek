@@ -97,6 +97,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         if (actionBar != null){
             actionBar.hide();
         }
+
         //扫一扫
         scanbutton = (Button) findViewById(R.id.scanbutton);
         scanbutton.setOnClickListener(this);
@@ -318,20 +319,21 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 startActivityForResult(hdintent, 2);
                 Log.e(TAG, "onMenuItemClick: 回调设置");
                 break;
+
             //传参1
             case R.id.ccsetting_item:
                 //调用方法传递
                 actionStart(MainActivity.this, data, data1);
                 Log.e(TAG, "onMenuItemClick: 传参设置");
-
                 break;
+
             case R.id.url_item:
                 Intent urlintent = new Intent(Intent.ACTION_VIEW);
                 urlintent.setData(Uri.parse("http://www.baidu.com"));
                 startActivity(urlintent);
                 Log.e(TAG, "onMenuItemClick: 链接");
-
                 break;
+
             case R.id.cal_item:
                 Intent calintent = new Intent(Intent.ACTION_DIAL);
                 calintent.setData(Uri.parse("tel:10086"));
@@ -339,6 +341,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 Log.e(TAG, "onMenuItemClick: 电话");
 
                 break;
+
                 //AlertDialog对话框
             case R.id.AlertDialog_item:
                 //创建一个AlertDialog的实例
@@ -364,6 +367,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 //调用show显示对话框
                 alertDialog.show();
                 break;
+
                 //弹出的对话框中还显示进度条
             case  R.id.ProgressDialog_item:
                 //创建一个ProgressDialog的实例
@@ -374,6 +378,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 progreesDialog.setCancelable(true);
                 //调用show显示对话框
                 progreesDialog.show();
+                break;
+                //
+            case R.id.recycler_view:
+                Intent recycler = new Intent(MainActivity.this,Icon.class);
+                startActivity(recycler);
+                break;
             default:
         }
         return true;

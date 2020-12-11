@@ -140,8 +140,26 @@ ListView：
         //调用ListView 的setAdapter方法将构建好的适配器传递进去
         ListView listView = (ListView)findViewById(R.id.list_view);
         listView.setAdapter(adapter);
-
-
+PopupMenu：
+        //PopupMenu点击与应用  因为PopupMenu没有在activity_main 布局内所以单独写了一个点击事件
+        mainMenu = (ImageView) findViewById(R.id.main_menu);
+        mainMenu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //通过PopupMenu的构造函数实例化一个PopupMenu对象，传递一个当前上下文对象以及绑定的View
+                PopupMenu popupMenu = new PopupMenu(MainActivity.this,view);
+                //获取菜单填充器
+                MenuInflater inflater = popupMenu.getMenuInflater();
+                //使用MenuInflater.inflate()方法加载menu的XML文件到PopupMenu.getMenu()中
+                inflater.inflate(R.menu.main,popupMenu.getMenu());
+                //绑定菜单的点击事件
+                popupMenu.setOnMenuItemClickListener(MainActivity.this);
+                //显示
+                popupMenu.show();
+                Log.e(TAG, "onClick: popupMenu");
+            }
+        });
+RecyclerView：
 定制ListView：
     新建类Fruit 作为ListView的适配器的适配类型
     public class Fruit {
@@ -161,6 +179,55 @@ ListView：
     }
     为ListView的子项指定一个我们自定义的布局 新建xml
 
+    为RecyclerView准备一个适配器新建FruitAdapter类，让这个类继承自RecyclerView.Adapter
+    并将泛型指定为 FruitAdapter.ViewHolder ViewHolder是在FruitAdapter类中定义的一个内部类
+    class FruitAdapter extends RecyclerView.Adapter<FruitAdapter.ViewHolder> {
+
+
+    private List<Fruit> mFruitList;
+    //定义了一个内部类ViewHolder，继承RecyclerView.ViewHolder
+    //然后ViewHolder的内部构造函数 要传入一个itemView 通常是RecyclerView子项的最外层布局
+    //通过findViewById 来获取布局中的实例
+    static class ViewHolder extends RecyclerView.ViewHolder {
+        ImageView fruitImage;
+        TextView fruitName;
+
+        public ViewHolder(@NonNull View itemView) {
+            super(itemView);
+            fruitImage = (ImageView) itemView.findViewById(R.id.fruit_image);
+            fruitName = (TextView) itemView.findViewById(R.id.fruit_name);
+        }
+    }
+    //把要展示的数据源传进来在赋值给mFruitList
+    public FruitAdapter(List<Fruit> fruitList) {
+        mFruitList = fruitList;
+    }
+    //由于FruitAdapter是继承自RecyclerView.Adapter 那么就必须重写 onCreateViewHolder onBindViewHolder getItemCount 三个方法
+    //onCreateViewHolder 用于创建ViewHolder 实例 将fruit_item布局加载进来然后创建了一个ViewHolder实例 最后返回实例
+    @Override
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.fruit_item, parent, false);
+        ViewHolder holder = new ViewHolder(view);
+
+        return holder;
+    }
+    //用于对RecyclerView子项进行赋值
+    @Override
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        Fruit fruit = mFruitList.get(position);
+        holder.fruitImage.setImageResource(fruit.getImageId());
+        holder.fruitName.setText(fruit.getName());
+
+    }
+    //有多少子项，返回长度
+    @Override
+    public int getItemCount() {
+        return mFruitList.size();
+    }
+}
+    左右滑动：
+    setOrientation来设置布局的排列方向，默认是纵向排列 HORIZONTAL表示横行排列
+    layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
 
 
 
