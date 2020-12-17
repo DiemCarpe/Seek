@@ -226,17 +226,16 @@ RecyclerView：
     }
 }
     左右滑动：
+        android:orientation="vertical"
+        android:layout_width="100dp"
+        Img:
+            android:layout_gravity="center_horizontal"
+        Text:
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="10dp"
+
     setOrientation来设置布局的排列方向，默认是纵向排列 HORIZONTAL表示横行排列
     layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
-
-
-
-
-
-
-
-
-
 
 
 
