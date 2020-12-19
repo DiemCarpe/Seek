@@ -238,5 +238,28 @@ RecyclerView：
     layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
 
 
+    点击事件：
+        //修改ViewHolder 在ViewHolder中添加了fruitView来保存子项最外层布局的实例
+        View fruitView;
+        fruitView = view;
 
+        //然后在onCreateViewHolder中注册点击事件
+        final ViewHolder holder = new ViewHolder(view);
+
+        holder.fruitView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int position = holder.getAdapterPosition();
+                Fruit fruit = mFruitList.get(position);
+                Toast.makeText(view.getContext(), "点击的是"+fruit.getName(), Toast.LENGTH_SHORT).show();
+            }
+        });
+        holder.fruitImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int position = holder.getAdapterPosition();
+                Fruit fruit = mFruitList.get(position);
+                Toast.makeText(view.getContext(), "NAME"+fruit.getName(), Toast.LENGTH_SHORT).show();
+            }
+        });
 
