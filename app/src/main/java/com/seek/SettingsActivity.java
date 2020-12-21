@@ -4,24 +4,39 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.seek.msg.MsgAdapter;
+import com.seek.msg.Msg;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.PreferenceFragmentCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 //事件监听1
 public class SettingsActivity extends BaseActivity implements View.OnClickListener {
     private Intent intent;
     private TextView textView;
-    private Button button2;
+    private Button button2, send;
     private static final String TAG = "设置页面";
     private ActionBar actionBar;
-
+    private List<Msg> msgList = new ArrayList<Msg>();
+    private EditText inputText;
+    private RecyclerView msgRecyclerView;
+    private MsgAdapter adapter;
 
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
@@ -37,7 +52,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         Log.e(TAG, "SettingsActivity onCreate: Task is " + getTaskId());
         setContentView(R.layout.settings_activity);
         actionBar = getSupportActionBar();
-        if(actionBar != null){
+        if (actionBar != null) {
             actionBar.hide();
         }
         if (savedInstanceState != null) {
@@ -48,17 +63,17 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 
         }
         //事件监听2  绑定事件
-        Button button2=(Button)findViewById(R.id.button2);
-        button2.setOnClickListener(this);
+//        Button button2 = (Button) findViewById(R.id.button2);
+//        button2.setOnClickListener(this);
+//
+//        Button button3 = (Button) findViewById(R.id.button3);
+//        button3.setOnClickListener(this);
 
-        Button button3=(Button)findViewById(R.id.button3);
-        button3.setOnClickListener(this);
 
-
-        getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.settings, new SettingsFragment())
-                .commit();
+//        getSupportFragmentManager()
+//                .beginTransaction()
+//                .replace(R.id.settings, new SettingsFragment())
+//                .commit();
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
@@ -67,9 +82,50 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         final Intent intent = getIntent();
         String data = intent.getStringExtra("extra_data");
         String data1 = intent.getStringExtra("extra_data1");
-        Log.e(TAG, "extra_data: " + data + data1);
-        TextView textView = (TextView) findViewById(R.id.textView);
-        textView.setText(data);
+//        Log.e(TAG, "extra_data: " + data + data1);
+//        TextView textView = (TextView) findViewById(R.id.textView);
+//        textView.setText(data);
+        //初始化消息数据
+        initMsga();
+        inputText = (EditText) findViewById(R.id.input_text);
+        send = (Button) findViewById(R.id.send);
+        send.setOnClickListener(this);
+        msgRecyclerView = (RecyclerView) findViewById(R.id.message_view);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        msgRecyclerView.setLayoutManager(layoutManager);
+
+        adapter = new MsgAdapter(msgList);
+        msgRecyclerView.setAdapter(adapter);
+//        send.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                String content = inputText.getText().toString();
+//                if (!"".equals(content)) {
+//                    Msg msg = new Msg(content, Msg.TYPE_SENT);
+//                    msgList.add(msg);
+//                    //当有新消失时，刷新ListView中的显示
+//                    adapter.notifyItemInserted(msgList.size() - 1);
+//                    //将ListView 定位到最后一行
+//                    msgRecyclerView.scrollToPosition(msgList.size() - 1);
+//                    //清空输入框
+//                    inputText.setText("");
+//                }
+//            }
+//        });
+
+    }
+
+    //初始化消息数据
+    private void initMsga() {
+        Msg msg1 = new Msg("Hello guy.", Msg.TYPE_RECEIVED);
+        msgList.add(msg1);
+        Msg msg2 = new Msg("Hello Who is that?", Msg.TYPE_SENT);
+        msgList.add(msg2);
+        Msg msg3 = new Msg("Are you a Chinese?", Msg.TYPE_RECEIVED);
+        msgList.add(msg3);
+        Msg msg4 = new Msg("是的，我是", Msg.TYPE_SENT);
+        msgList.add(msg4);
+
     }
 
     //事件监听3
@@ -89,7 +145,21 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                 Intent intent2 = new Intent(SettingsActivity.this, ThirdActivity.class);
                 startActivity(intent2);
                 break;
-            default:break;
+            case R.id.send:
+                String content = inputText.getText().toString();
+                if (!"".equals(content)) {
+                    Msg msg = new Msg(content, Msg.TYPE_SENT);
+                    msgList.add(msg);
+                    //当有新消失时，刷新ListView中的显示
+                    adapter.notifyItemChanged(msgList.size() - 1);
+                    //将ListView 定位到最后一行
+                    msgRecyclerView.scrollToPosition(msgList.size() - 1);
+                    //清空输入框
+                    inputText.setText("");
+                    break;
+                }
+            default:
+                break;
         }
     }
 
@@ -114,4 +184,81 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         super.onDestroy();
         Log.e(TAG, "onDestroy: SettingsActivity");
     }
+
+//    //消息类
+//    public class Msg {
+//        public static final int TYPE_RECEIVED = 0;
+//        public static final int TYPE_SENT = 1;
+//        private String content;
+//        private int type;
+//
+//        public Msg(String content, int type) {
+//            this.content = content;
+//            this.type = type;
+//        }
+//
+//        //消息内容
+//        public String getContent() {
+//            return content;
+//        }
+//
+//        //消息类型
+//        public int getType() {
+//            return type;
+//        }
+//    }
+//
+//    //Recycler适配器类
+//    public  class MsgAdapter extends RecyclerView.Adapter<MsgAdapter.ViewHolder> {
+//        private List<Msg> mMsgList;
+//
+//        static class ViewHolder extends RecyclerView.ViewHolder {
+//            LinearLayout leftLayout;
+//            LinearLayout rightLayout;
+//            TextView leftMsg;
+//            TextView rightMsg;
+//
+//            public ViewHolder(View view) {
+//                super(view);
+//                leftLayout = (LinearLayout) view.findViewById(R.id.left_layout);
+//                rightLayout = (LinearLayout) view.findViewById(R.id.right_layout);
+//                leftMsg = (TextView) view.findViewById(R.id.left_msg);
+//                rightMsg = (TextView) view.findViewById(R.id.right_msg);
+//            }
+//        }
+//
+//        public MsgAdapter(List<Msg> msgList) {
+//            mMsgList = msgList;
+//        }
+//
+//        @NonNull
+//        @Override
+//        public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+//            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.msg_item, parent, false);
+//            return new ViewHolder(view);
+//        }
+//
+//        @Override
+//        public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+//            Msg msg = mMsgList.get(position);
+//            //收到消息显示左边隐藏右边
+//            if (msg.getType() == Msg.TYPE_RECEIVED) {
+//                holder.leftLayout.setVisibility(View.VISIBLE);
+//                holder.rightLayout.setVisibility(View.GONE);
+//                holder.leftMsg.setText(msg.getContent());
+//                //发送消息显示右边隐藏左边
+//            } else if (msg.getType() == Msg.TYPE_SENT) {
+//                holder.leftLayout.setVisibility(View.GONE);
+//                holder.rightLayout.setVisibility(View.VISIBLE);
+//                holder.rightMsg.setText(msg.getContent());
+//            }
+//        }
+//
+//        @Override
+//        public int getItemCount() {
+//            return mMsgList.size();
+//        }
+//
+//
+//    }
 }

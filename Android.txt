@@ -263,3 +263,6 @@ RecyclerView：
             }
         });
 
+制作Nine-Patch图片
+    1.图片拉伸
+    在AndroidStudio中找到图片右击选择Create 9-Patch file 创建-9的图片并设置拉伸范围
