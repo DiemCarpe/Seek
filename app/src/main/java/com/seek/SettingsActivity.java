@@ -33,10 +33,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
     private Button button2, send;
     private static final String TAG = "设置页面";
     private ActionBar actionBar;
-    private List<Msg> msgList = new ArrayList<Msg>();
-    private EditText inputText;
-    private RecyclerView msgRecyclerView;
-    private MsgAdapter adapter;
+
 
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
@@ -86,47 +83,20 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
 //        TextView textView = (TextView) findViewById(R.id.textView);
 //        textView.setText(data);
         //初始化消息数据
-        initMsga();
-        inputText = (EditText) findViewById(R.id.input_text);
-        send = (Button) findViewById(R.id.send);
-        send.setOnClickListener(this);
-        msgRecyclerView = (RecyclerView) findViewById(R.id.message_view);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        msgRecyclerView.setLayoutManager(layoutManager);
-
-        adapter = new MsgAdapter(msgList);
-        msgRecyclerView.setAdapter(adapter);
-//        send.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                String content = inputText.getText().toString();
-//                if (!"".equals(content)) {
-//                    Msg msg = new Msg(content, Msg.TYPE_SENT);
-//                    msgList.add(msg);
-//                    //当有新消失时，刷新ListView中的显示
-//                    adapter.notifyItemInserted(msgList.size() - 1);
-//                    //将ListView 定位到最后一行
-//                    msgRecyclerView.scrollToPosition(msgList.size() - 1);
-//                    //清空输入框
-//                    inputText.setText("");
-//                }
-//            }
-//        });
+//        initMsga();
+//        inputText = (EditText) findViewById(R.id.input_text);
+//        send = (Button) findViewById(R.id.send);
+//        send.setOnClickListener(this);
+//        msgRecyclerView = (RecyclerView) findViewById(R.id.message_view);
+//        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+//        msgRecyclerView.setLayoutManager(layoutManager);
+//
+//        adapter = new MsgAdapter(msgList);
+//        msgRecyclerView.setAdapter(adapter);
 
     }
 
-    //初始化消息数据
-    private void initMsga() {
-        Msg msg1 = new Msg("Hello guy.", Msg.TYPE_RECEIVED);
-        msgList.add(msg1);
-        Msg msg2 = new Msg("Hello Who is that?", Msg.TYPE_SENT);
-        msgList.add(msg2);
-        Msg msg3 = new Msg("Are you a Chinese?", Msg.TYPE_RECEIVED);
-        msgList.add(msg3);
-        Msg msg4 = new Msg("是的，我是", Msg.TYPE_SENT);
-        msgList.add(msg4);
 
-    }
 
     //事件监听3
     @Override
@@ -145,19 +115,7 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
                 Intent intent2 = new Intent(SettingsActivity.this, ThirdActivity.class);
                 startActivity(intent2);
                 break;
-            case R.id.send:
-                String content = inputText.getText().toString();
-                if (!"".equals(content)) {
-                    Msg msg = new Msg(content, Msg.TYPE_SENT);
-                    msgList.add(msg);
-                    //当有新消失时，刷新ListView中的显示
-                    adapter.notifyItemChanged(msgList.size() - 1);
-                    //将ListView 定位到最后一行
-                    msgRecyclerView.scrollToPosition(msgList.size() - 1);
-                    //清空输入框
-                    inputText.setText("");
-                    break;
-                }
+
             default:
                 break;
         }

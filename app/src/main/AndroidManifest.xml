@@ -32,7 +32,8 @@
         android:roundIcon="@drawable/ic_seek"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Icon"></activity>
+        <activity android:name=".msg.MsgActivity"></activity>
+        <activity android:name=".Icon" />
         <activity
             android:name=".DialogAcitvity"
             android:theme="@style/Theme.AppCompat.Dialog" />

@@ -45,6 +45,7 @@ import com.seek.decode.MainActivityHandler;
 //import com.google.zxing.client.android.FinishListener;
 import com.seek.camera.CameraManager;
 import com.seek.camera.open.CameraFacing;
+import com.seek.msg.MsgActivity;
 import com.seek.view.ViewfinderView;
 import com.seek.BaseActivity;
 
@@ -181,6 +182,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 String inputText = editText.getText().toString();
                 Toast.makeText(MainActivity.this, inputText, Toast.LENGTH_SHORT).show();
                 break;
+
             default:
         }
     }
@@ -383,6 +385,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             case R.id.recycler_view:
                 Intent recycler = new Intent(MainActivity.this,Icon.class);
                 startActivity(recycler);
+                break;
+            case R.id.msg_but:
+                Intent msg = new Intent(MainActivity.this, MsgActivity.class);
+                startActivity(msg);
                 break;
             default:
         }

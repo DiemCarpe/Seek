@@ -1,65 +1,36 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="wrap_content"
     android:background="@color/msgbackground"
-    tools:context=".SettingsActivity">
-<!--    <include layout="@layout/title"/>-->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/message_view"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        />
+   >
+    <include layout="@layout/title"/>
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <Button
+        android:id="@+id/button3"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        >
+        android:layout_weight="1"
 
-        <EditText
-            android:id="@+id/input_text"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:hint="短信息"
-            android:maxLines="2"
-            />
+        android:text="启动模式" />
 
-        <Button
-            android:id="@+id/send"
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="回调" />
+
+    <FrameLayout
+        android:id="@+id/settings"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <TextView
+            android:id="@+id/textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Send" />
+            android:text="TextView" />
 
-    </LinearLayout>
-<!--    <Button-->
-<!--        android:id="@+id/button3"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_weight="1"-->
+    </FrameLayout>
 
-<!--        android:text="启动模式" />-->
-
-<!--    <Button-->
-<!--        android:id="@+id/button2"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_weight="1"-->
-<!--        android:text="回调" />-->
-
-<!--    </LinearLayout>-->
-<!--    <FrameLayout-->
-<!--        android:id="@+id/settings"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="match_parent" >-->
-
-<!--        <TextView-->
-<!--            android:id="@+id/textView"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:text="TextView" />-->
-
-<!--    </FrameLayout>-->
 </LinearLayout>
